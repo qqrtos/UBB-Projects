@@ -1,0 +1,12 @@
+Configure RIP:
+
+enable
+conf t
+
+router rip
+version 2
+network [iesire] //repeat for all outgoing networks
+exit
+
+
+After configuring all routers, run 'show ip route' to check that everything is in place.

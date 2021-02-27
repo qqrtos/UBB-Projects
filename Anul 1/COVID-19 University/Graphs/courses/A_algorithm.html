@@ -1,0 +1,165 @@
+
+<!-- saved from url=(0054)http://www.cs.ubbcluj.ro/~rlupsa/edu/grafe/a-star.html -->
+<html><script data-dapp-detection="">
+(function() {
+  let alreadyInsertedMetaTag = false
+
+  function __insertDappDetected() {
+    if (!alreadyInsertedMetaTag) {
+      const meta = document.createElement('meta')
+      meta.name = 'dapp-detected'
+      document.head.appendChild(meta)
+      alreadyInsertedMetaTag = true
+    }
+  }
+
+  if (window.hasOwnProperty('web3')) {
+    // Note a closure can't be used for this var because some sites like
+    // www.wnyc.org do a second script execution via eval for some reason.
+    window.__disableDappDetectionInsertion = true
+    // Likely oldWeb3 is undefined and it has a property only because
+    // we defined it. Some sites like wnyc.org are evaling all scripts
+    // that exist again, so this is protection against multiple calls.
+    if (window.web3 === undefined) {
+      return
+    }
+    __insertDappDetected()
+  } else {
+    var oldWeb3 = window.web3
+    Object.defineProperty(window, 'web3', {
+      configurable: true,
+      set: function (val) {
+        if (!window.__disableDappDetectionInsertion)
+          __insertDappDetected()
+        oldWeb3 = val
+      },
+      get: function () {
+        if (!window.__disableDappDetectionInsertion)
+          __insertDappDetected()
+        return oldWeb3
+      }
+    })
+  }
+})()</script><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+ <link rel="StyleSheet" href="./A_algorithm_files/normal-style.css" type="text/css">
+ <title>Graph algorithms - A* algorithm</title>
+</head>
+<body>
+<address class="topnav">
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/index-en.html">home page</a> -&gt;
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/edu/index.html">teaching</a> -&gt;
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/edu/grafe/index.html">graph algorithms</a> -&gt;
+  <span class="selflink">A* algorithm</span>
+</address>
+
+<h1><center>Graph algorithms - A* algorithm</center></h1>
+
+<h2>Problem</h2>
+
+<p>Given a graph with non-negative costs, two vertices <i>s</i> and <i>t</i>,
+and, for each vertex <i>x</i>, an estimation <i>h(x)</i> of the distance from <i>x</i>
+to <i>t</i> find a minimum cost walk from <i>s</i> to <i>t</i>.</p>
+
+<h2>Idea</h2>
+
+<p>The goal of the A* algorithm is to avoid computing paths that start from
+<i>s</i> but go in a direction opposite to <i>t</i>. For instance, if we want to go
+from Cluj to Paris, we won't try a route through Moscow.</p>
+
+<p>To be able to exclude such unpromising routes, we need, in addition to the graph
+itself, an estimation of the distance from each vertex to the target vertex. This
+estimation is part of the input data.</p>
+
+<p>Of course, not any estimation function will work. There are two conditions
+on the estimation function:</p><ul>
+  <li> (strong condition): for all edges <i>(x,y)</i>, we have 
+    <i>c(x,y) &#8805; h(x) - h(y)</i> (in other words, the estimation does not decrease,
+    along an edge, faster than the cost of that edge); in addition, <i>h(t)=0</i>;
+  </li><li> (weak condition): for all vertices <i>x</i>, we have <i>h(x) &#8804; d(x,t)</i>
+    (in other words, the estimation is always an underestimation).
+</li></ul><p></p>
+
+<p>If the graph represents places in space (cities, intersections, etc), then the
+estimation function could be the euclidian distance.
+
+</p><p>Essentially, the A* algorithm is identical with Dijkstra's algorithm,
+with one difference: the priority of a vertex <i>x</i> in the priority queue is not
+<i>dist[x]</i> but rather <i>dist[x]+h(x)</i>.</p>
+
+<h2>The algorithm</h2>
+
+<pre>Input:
+    G : directed graph with costs
+    s, t : two vertices
+    h : X -&gt; R the estimation of the distance to t
+Output:
+    dist : a map that associates, to each accessible vertex, the cost of the minimum
+            cost walk from s to it
+    prev : a map that maps each accessible vertex to its predecessor on a path from s to it
+Algorithm:
+    PriorityQueue q
+    Dictionary prev
+    Dictionary dist
+    q.enqueue(s, h(s))
+    dist[s] = 0
+    found = false
+    while not q.isEmpty() and not found do
+        x = q.dequeue()
+        for y in Nout(x) do
+            if y not in dist.keys() or dist[x] + cost(x,y) &lt; dist[y] then
+                dist[y] = dist[x] + cost(x, y)
+                q.enqueue(y, dist[y]+h(y))
+                prev[y] = x
+            end if
+        end for
+        if x == t then
+            found = true
+        endif
+    end while
+</pre>
+
+<h2>Proof of correctness</h2>
+
+<p>We claim that:</p><ul>
+  <li>If the estimation satisfies the strong condition, then, each time a vertex
+    <i>x</i> is dequeued, <i>dist[x]</i> is the cost of the minimum cost walk from
+    <i>s</i> to <i>x</i>. It immediately follows that, at the end, when <i>t</i> is
+    dequeued, we have the minimum cost walk from <i>s</i> to <i>t</i>.
+  </li><li>If the estimation only satisfies the weak condition, we still get the
+    minimum cost walk from <i>s</i> to <i>t</i>, but some vertices may be dequeued
+    and enqueued several times.
+</li></ul>
+
+<h3>Strong condition estimate</h3>
+
+<p>One way of proving the correctness is as follows. We set a new cost function on the
+edges, defined as
+<br>
+<i>c'(x,y) = c(x,y) - h(x) + h(y)</i>
+<br>
+A walk from <i>s</i> to <i>t</i> with the new cost function will have a cost
+<br>
+<i>c'(s=x<sub>0</sub>,x<sub>1</sub>,...,x<sub>k</sub>=t) = 
+c'(x<sub>0</sub>,x<sub>1</sub>) + c'(x<sub>1</sub>,x<sub>2</sub>) + ... 
+  + c'(x<sub>k-1</sub>,x<sub>k</sub>) =
+<br>
+= c(x<sub>0</sub>,x<sub>1</sub>) - h(x<sub>0</sub>) + h(x<sub>1</sub>)
+  + c(x<sub>1</sub>,x<sub>2</sub>) - h(x<sub>1</sub>) + h(x<sub>2</sub>) + ... 
+  + c(x<sub>k-1</sub>,x<sub>k</sub>) - h(x<sub>k-1</sub>) + h(x<sub>k</sub>) =
+<br>
+= c(x<sub>0</sub>,x<sub>1</sub>,...,x<sub>k</sub>) - h(s) + h(t)
+  </i></p>
+  
+<p>Consequently, for all the walks from <i>s</i> to <i>t</i>, the difference between the
+cost <i>c</i> and <i>c'</i> is the same, so, the minimum cost walk is the same for both
+costs.</p>
+
+<p>Finally, notice that the A* algorithm is, essentially, the Dijkstra algorithm
+for the cost <i>c'</i>, and that <i>c'</i> is non-negative.</p>
+
+<address class="signature">
+<a href="http://www.cs.ubbcluj.ro/~rlupsa/index-en.html">Radu-Lucian LUP&#350;A</a><br>
+2016-03-16
+</address>
+
+</body></html>

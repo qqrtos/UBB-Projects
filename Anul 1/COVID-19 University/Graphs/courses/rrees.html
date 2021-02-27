@@ -1,0 +1,261 @@
+
+<!-- saved from url=(0053)http://www.cs.ubbcluj.ro/~rlupsa/edu/grafe/trees.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+ <link rel="StyleSheet" href="./rrees_files/normal-style.css" type="text/css">
+ <title>Graph algorithms - Trees</title>
+<script data-dapp-detection="">
+(function() {
+  let alreadyInsertedMetaTag = false
+
+  function __insertDappDetected() {
+    if (!alreadyInsertedMetaTag) {
+      const meta = document.createElement('meta')
+      meta.name = 'dapp-detected'
+      document.head.appendChild(meta)
+      alreadyInsertedMetaTag = true
+    }
+  }
+
+  if (window.hasOwnProperty('web3')) {
+    // Note a closure can't be used for this var because some sites like
+    // www.wnyc.org do a second script execution via eval for some reason.
+    window.__disableDappDetectionInsertion = true
+    // Likely oldWeb3 is undefined and it has a property only because
+    // we defined it. Some sites like wnyc.org are evaling all scripts
+    // that exist again, so this is protection against multiple calls.
+    if (window.web3 === undefined) {
+      return
+    }
+    __insertDappDetected()
+  } else {
+    var oldWeb3 = window.web3
+    Object.defineProperty(window, 'web3', {
+      configurable: true,
+      set: function (val) {
+        if (!window.__disableDappDetectionInsertion)
+          __insertDappDetected()
+        oldWeb3 = val
+      },
+      get: function () {
+        if (!window.__disableDappDetectionInsertion)
+          __insertDappDetected()
+        return oldWeb3
+      }
+    })
+  }
+})()</script></head>
+<body>
+<address class="topnav">
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/index-en.html">home page</a> -&gt;
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/edu/index.html">teaching</a> -&gt;
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/edu/grafe/index.html">graph algorithms</a> -&gt;
+  <span class="selflink">Trees</span>
+</address>
+
+<h1><center>Graph algorithms - Trees</center></h1>
+
+<h2>Definition and properties</h2>
+<p><b>Definition:</b> A <i>tree</i> is an undirected graph that is connected and has no cycles</p>
+
+<a few="" notes:<ul="">
+  <li>We understand by <i>cycle</i> a closed walk with no repeating vertices (except that the
+    first and the last vertex are the same) and no repeating edges. This means that, if there
+    is an edge between vertices 1 and 2, the walk (1, 2, 1) is not a cycle because it uses the
+    same edge twice (once in each direction).
+  </li><li>The smalles tree that fits the definition consists in a single isolated vertex.
+  </li><li>There is a big difference between <i>non-rooted trees</i> considered here and the
+    <i>rooted trees</i> used especially for data structures. Any tree becomes a rooted tree
+    by distinguishing any of its vertices as root and directing all edges away from the root.
+    Viceversa, any rooted tree becomes a non-rooted tree if we forget the distinguished vertex
+    and the parent-child direction of edges.
+  </li></a><li><a few="" notes:<ul="">For data structures, we most often distinguish an order among the children of a vertex.
+    Thus, there are rooted tree with no order among children (we simply have a root and all
+    edges directed away from it), and rooted tree with order on children (where, in addition,
+    we distinguish an order among the children). For binary trees, in addition, we sometimes
+    distinguish between a node with only a left child and a node with only a right child
+    (this is the case for binary search trees, for example). All these kind of trees are distinct.
+    Bottom line: trees studied here are non-rooted and there is no order among the neighbours
+    of any given node.
+
+
+<p>Equivalent properties for an undirected graph:</p><ol>
+  <li>The graph is a tree;
+  </li><li>The graph is connected and has at most <i>n-1</i> edges (where <i>n</i> is the
+    number of vertices);
+  </li><li>The graph has no cycles and has at least <i>n-1</i> edges;
+  </li><li>The graph is connected and minimal (if we remove any edge, it becomes non-connected);
+  </li><li>The graph has no cycles and is maximal (if we add any edge, it closes a cycle);
+  </li><li>For any pair of vertices, there is a unique path connecting them.
+</li></ol><p></p>
+
+<h2>The minimum spanning tree problem</h2>
+
+<p>Given a graph with non-negative costs, find a tree with the same vertices and a subset of
+the edges of the original graph (a <i>spanning tree</i>) of minimum total cost.</p>
+
+<p>Example: input graph:</p>
+<p><img src="./rrees_files/tree.png">
+
+</p><p>There are two well-known algorithms for solving this problem: Kruskal's algorithm and
+Prim's algorithm.Kruskal's algorithm
+
+</p><h4>Idea</h4>
+
+<p>The idea is to start with a graph with all the vertices and no edges, and then to
+add edges that do not close cycles. This way, as the algorithm progresses, the graph
+will consist in small trees (it will be what is called a <i>forest</i> - a graph
+with no cycles, meaning that its connected components are trees), and those trees are
+joined together to form fewer and larger trees, until we have a single tree spanning
+all the vertices. In doing all the above, we use the edges in increasing order of their cost.</p>
+
+<h4>The basic algorithm</h4>
+
+<pre>Input:
+    G : undirected graph with costs
+Output:
+    edges : a collection of edges, forming a minimum cost spanning tree
+Algorithm:
+    e<sub>0</sub>,...,e<sub>m-1</sub> = list of edges sorted increasing by cost
+    edges = &#8709;
+    for i from 0 to m-1 do
+        if edges &#8746; {e<sub>i</sub>} has no cycles then
+            edges.add(e<sub>i</sub>)
+        end if
+    end for
+</pre>
+
+<table border="1px">
+  <tbody><tr>
+    <th>Edge</th>
+    <th>Cost</th>
+  </tr>
+  <tr>
+    <td>1-2*</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>2-6*</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>4-5*</td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td>1-6</td>
+    <td>2</td>
+  </tr>
+  <tr>
+    <td>1-3*</td>
+    <td>2</td>
+  </tr>
+  <tr>
+    <td>3-6</td>
+    <td>2</td>
+  </tr>
+  <tr>
+    <td>1-4*</td>
+    <td>3</td>
+  </tr>
+  <tr>
+    <td>3-5</td>
+    <td>3</td>
+  </tr>
+  <tr>
+    <td>3-4</td>
+    <td>4</td>
+  </tr>
+  <tr>
+    <td>5-6</td>
+    <td>5</td>
+  </tr>
+</tbody></table>
+
+<p><img src="./rrees_files/kruskal1.png">&nbsp;&nbsp;&nbsp;<img src="./rrees_files/kruskal2.png">&nbsp;&nbsp;&nbsp;<img src="./rrees_files/kruskal3.png">&nbsp;&nbsp;&nbsp;<img src="./rrees_files/kruskal4.png">&nbsp;&nbsp;&nbsp;<img src="./rrees_files/kruskal5.png">
+
+</p><h4>Issue with the basic algorithm</h4>
+
+<p>The difficult part here is how to test the existence of cycles. There is a much easier way:
+to keep track of the connected components of <tt>edges</tt>, and to notice that a cycle is formed
+when adding a new edge if and only if the endpoints of the edge are in the same component.</p>
+
+<p>Keeping track of the connected components is an interesting problem in itself.</p>
+
+<p>Ideas:</p><ul>
+  <li>Each component is kept as a rooted tree (independent of the tree of the original graph);
+  </li><li>Each component has a <i>representative</i> vertex that is the root of the tree;
+    each vertex in the component has a pointer to its parent;
+  </li><li>Therefore, to test if two vertices are in the same component, we go from each of them
+    up to the representative of its component, and we verify if we reach the same vertex;
+  </li><li>When joining two components, we place the representative of one component as a child of
+    the representative of the other. This way, all vertices in the first component are moved
+    to the second.
+  </li><li>There are 2 optimizations to prevent the height of the rooted tree to increase:<ul>
+    <li>When joining two components of different heights, the representative of the shortest
+      is set as child of the representative of the tallest (never vice-versa);
+    </li><li>When retrieving the representative, we <i>compress the path</i>, that is, we place
+      all the vertices along the path to the representative as direct children of the
+      representative.
+  </li></ul>
+</li></ul>
+
+
+<h4>Proof of correctness</h4>
+
+<p>The proof is a clasical proof for a greedy algorithm: we compare the Kruskal's solution with
+the optimal solution for the problem, find the first difference, and modify the optimal solution,
+without loosing the optimality, so that to match better the Kruskal's solution. By repeating the
+above step, we turn the optimal solution into Kruskal's solution without loosing the optimality,
+thus proving that Kruskal's solution is optimal.</p>
+
+<h3>Prim's algorithm</h3>
+
+<h4>Idea</h4>
+
+<p>Prim's algorithm is similar to Kruskal's algorithm; however, instead of starting with lots of
+trees and joining them together, Prim's algorithm starts with a single tree consisting in
+a single vertex, and then grows it until it covers all the vertices. At each step, an edge
+is added, connecting an exterior vertex to the tree. Among all the edges connecting
+a vertex outside the tree with one in the tree, it is choosen the edge of smallest cost.</p>
+
+<h4>The algorithm</h4>
+
+<pre>Input:
+    G : directed graph with costs
+Output:
+    edges : a collection of edges, forming a minimum cost spanning tree
+Algorithm:
+    PriorityQueue q
+    Dictionary prev
+    Dictionary dist
+    edges = &#8709;
+    choose s in X arbitrarily
+    vertices = {s}
+    for x in N(s) do
+        dist[x] = cost(x, s)
+        prev[x] = s
+        q.enqueue(x, d[x])              // second argument is priority
+    while not q.isEmpty() do
+        x = q.dequeue()      // dequeues the element with minimum value of priority
+        if x &#8713; vertices then
+            edges.add({x, prev[x]})
+            vertices.add(x)
+            for y in N(x) do
+                if y not in dist.keys() or cost(x,y) &lt; dist[y] then
+                    dist[y] = cost(x, y)
+                    q.enqueue(y, dist[y])
+                    prev[y] = x
+                end if
+            end for
+        end if
+    end while
+</pre>
+
+<p><img src="./rrees_files/prim1.png">&nbsp;&nbsp;&nbsp;<img src="./rrees_files/prim2.png">&nbsp;&nbsp;&nbsp;<img src="./rrees_files/prim3.png">&nbsp;&nbsp;&nbsp;<img src="./rrees_files/prim4.png">&nbsp;&nbsp;&nbsp;<img src="./rrees_files/prim5.png">
+
+</p></a><address class="signature"><a few="" notes:<ul="">
+</a><a href="http://www.cs.ubbcluj.ro/~rlupsa/index-en.html">Radu-Lucian LUP&#350;A</a><br>
+2020-05-15
+</address>
+
+</li></body></html>

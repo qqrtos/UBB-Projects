@@ -1,0 +1,208 @@
+
+<!-- saved from url=(0051)http://www.cs.ubbcluj.ro/~rlupsa/edu/grafe/scc.html -->
+<html><script data-dapp-detection="">
+(function() {
+  let alreadyInsertedMetaTag = false
+
+  function __insertDappDetected() {
+    if (!alreadyInsertedMetaTag) {
+      const meta = document.createElement('meta')
+      meta.name = 'dapp-detected'
+      document.head.appendChild(meta)
+      alreadyInsertedMetaTag = true
+    }
+  }
+
+  if (window.hasOwnProperty('web3')) {
+    // Note a closure can't be used for this var because some sites like
+    // www.wnyc.org do a second script execution via eval for some reason.
+    window.__disableDappDetectionInsertion = true
+    // Likely oldWeb3 is undefined and it has a property only because
+    // we defined it. Some sites like wnyc.org are evaling all scripts
+    // that exist again, so this is protection against multiple calls.
+    if (window.web3 === undefined) {
+      return
+    }
+    __insertDappDetected()
+  } else {
+    var oldWeb3 = window.web3
+    Object.defineProperty(window, 'web3', {
+      configurable: true,
+      set: function (val) {
+        if (!window.__disableDappDetectionInsertion)
+          __insertDappDetected()
+        oldWeb3 = val
+      },
+      get: function () {
+        if (!window.__disableDappDetectionInsertion)
+          __insertDappDetected()
+        return oldWeb3
+      }
+    })
+  }
+})()</script><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+ <link rel="StyleSheet" href="./strongly_connected_components_files/normal-style.css" type="text/css">
+ <title>Graph algorithms - Strongly connected components</title>
+</head>
+<body>
+<address class="topnav">
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/index-en.html">home page</a> -&gt;
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/edu/index.html">teaching</a> -&gt;
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/edu/grafe/index.html">graph algorithms</a> -&gt;
+  <span class="selflink">Strongly connected components</span>
+</address>
+
+<h1><center>Graph algorithms - Strongly connected components</center></h1>
+
+<h2>The Kosaraju algorithm</h2>
+
+<pre>Input:
+    G : directed graph
+Output:
+    comp : a map that associates, to each vertex, the ID of its strongly connected component
+
+Subalgorithm DF1(Graph G, vertex x, Set&amp; visited, Stack&amp; processed)
+    for y in Nout(x) do
+        if y not in visited then
+            visited.add(y)
+            DF1(y)
+        end if
+    end for
+    processed.push(x)
+    
+Algorithm:
+    Stack processed
+    Set visited
+    
+    for s in X do
+        if s not in visited then
+            visited.add(s)
+            DF1(G, s, visited, processed)
+
+    visited.clear()
+    Queue q
+    int c = 0
+    while not processed.isEmpty() do
+        s = processed.pop()
+        if s not in visited then
+            c = c + 1
+            comp[s] = c
+            q.enqueue(s)
+            visited.add(s)
+            while not q.isEmpty() do
+                x = q.dequeue()
+                for y in Nin(x) do
+                    if y not in visited then
+                        visited.add(y)
+                        q.enqueue(y)
+                        comp[y] = c
+                    end if
+                 end for
+             end while
+         end if
+     end while        
+</pre>
+
+<!-- ================================================= -->
+
+<h2>Correctness</h2>
+
+<p>To clarify the terminology, at each time during the depth-first traversal, each vertex
+can be in one of 3 possible states:</p><ul>
+  <li>not visited yet (not yet in the <em>visited</em> set);
+  </li><li>on the execution stack (on the path from the current root to the current node);
+  </li><li>fully visited (and thus in the processed stack).
+</li></ul><p></p>
+
+<p>First, it is easy to show that a depth-first (DF) traversal started from a root
+visits all the vertices that are accessible from that root. It can ve shown by contradiction:
+assume a vertex that is accessible from the root, but never gets visited. Consider then a
+path from the root to that vertex; that path must have, at some point, a visited vertex
+followed by a non-visited vertex. But this means that, when that last visited vertex was
+visited, its successor must have been visited, too.</p>
+
+<p>Next, for each SCC, we consider the <em>representative vertex</em> of the SCC the
+first vertex, from that SCC, to get (partially) visited. We claim two things:</p><ul>
+  <li>The representative of a SCC is the first vertex, from that SCC,
+to be visited, but the last to be fully processed and added to the stack.
+Consequently, it will also be the first
+to be taken out of the stack in the second phase.
+  </li><li>If SCC B is accessible from SCC A, then the representative of A is fully processed
+<em>after</em> the representative of B.
+</li></ul><p></p>
+
+<p>Indeed, let <i>x</i> be the representative of a SCC. 
+At some point, <i>x</i> is processed, becoming effectively the root of DFS. Until it gets
+fully processed, 
+all the vertices accessible from <i>x</i> are processed, unless at least a path to them goes
+through an already visited vertex.
+However, the path cannot go through any of the ancestors of <i>x</i>, because none
+is accessible from <i>x</i>, as <i>x</i> is the first vertex of its SCC that is processed.
+As for the fully visited vertices, all the vertices accessible from them are already
+fully processed. Therefore, all the vertices in the SCC of <i>x</i> are processed between
+the time <i>x</i> is first touched until the time <i>x</i> is finished.
+</p>.
+
+<p>Now consider the second phase. At each iteration of the main loop, a representative of
+a new SCC is picked up from the processed stack. Let's call <i>x</i> that vertex and
+<i>A</i> its SCC. Now, all the vertices from which <i>x</i> is accessible are either
+members of <i>A</i> or members of another SCC (let's call it <i>Z</i>)
+from which <i>A</i> is accessible. But, in the second case, the representative of <i>Z</i>
+must have been put in the processed stack after <i>x</i> and, therefore,
+it is already processed and its SCC retrieved.</p>
+
+<!-- ================================================= -->
+
+<h2>On the reflexive-transitive closure and the reduced graph</h2>
+
+<p>The <i>reflexive-transitive closure</i> of a graph is the accessibility
+relation in that graph.</p>
+
+<p>Given a graph, we can define the relation <i>x~y</i> if <i>x</i>
+is accessible from <i>y</i> and <i>y</i> is accessible from <i>x</i>.
+Then, <i>~</i> is an equivalence relation, and it defines a partitioning
+of the set of vertices in the graph. The parts are the strongly connected
+components.</p>
+
+<p>Next, we can define an accessibility relation between components,
+by saying that component <i>B</i> is accessible from component <i>A</i>
+if there is a vertex in <i>B</i> that is accessible from a vertex in <i>A</i>.
+We immediately see that if there is a vertex in <i>B</i> that is accessible
+from a vertex in <i>A</i>, then each vertex in <i>B</i> is accessible from\
+each vertex in <i>A</i>.</p>
+
+<p>Finally, we can define a new graph in which the vertices are the SCC of
+the original graph and where we put an edge between two vertices if there
+is an edge between a vertex of the first component and a vertex of the second
+component. This is the <i>reduced graph</i> of the strogly connected
+components.</p>
+
+<p>It is easy to see that, in the reduced graph, there are no cycles.
+If there was a cycle, the SCCs in that cycle would be a single SCC.</p>
+
+<!-- ================================================= -->
+
+<h2>Tarjan's algorithm</h2>
+
+<p>Tarjan's algorithm is also based on performing a DFS in the graph, but
+it computes, for each vertex, the earliest ancestor vertex (closest to
+the root) that is directly reachable from that vertex or
+a descendent of that vertex
+in the DFS tree (this is called <i>lowlink</i>).</p>
+
+<p>The SCC representatives are recognized by the fact that their
+lowlink is equal to themselves.
+</p>
+
+<p>Actually retrieving the component is done as follows: a stack is maintained
+where a vertex is added when its processing starts. Then, when a vertex
+is recognized as SCC representative at the end of its processing,
+all the vertices up to and including the SCC representatives are
+poped out of the stack and marked as part of the SCC.</p>
+
+<address class="signature">
+<a href="http://www.cs.ubbcluj.ro/~rlupsa/index-en.html">Radu-Lucian LUP&#350;A</a><br>
+2018-04-17
+</address>
+
+</body></html>

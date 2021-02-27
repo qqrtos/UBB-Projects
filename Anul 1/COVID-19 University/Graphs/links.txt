@@ -1,0 +1,9 @@
+visual aid and manual exec for some algs: https://www.cs.usfca.edu/~galles/visualization/Algorithms.html
+
+kosaraju: https://www.youtube.com/watch?v=5wFyZJ8yH9Q   ->  alg at 9:20
+
+bfs: https://www.techiedelight.com/breadth-first-search/
+
+dfs: https://www.techiedelight.com/depth-first-search/
+
+bellman-ford: https://www.youtube.com/watch?v=obWXjtg0L64

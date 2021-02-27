@@ -1,0 +1,128 @@
+
+<!-- saved from url=(0052)http://www.cs.ubbcluj.ro/~rlupsa/edu/grafe/ford.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+ <link rel="StyleSheet" href="./Bellman-Ford_algorithm_files/normal-style.css" type="text/css">
+ <title>Graph algorithms - Bellman-Ford algorithm</title>
+<script data-dapp-detection="">
+(function() {
+  let alreadyInsertedMetaTag = false
+
+  function __insertDappDetected() {
+    if (!alreadyInsertedMetaTag) {
+      const meta = document.createElement('meta')
+      meta.name = 'dapp-detected'
+      document.head.appendChild(meta)
+      alreadyInsertedMetaTag = true
+    }
+  }
+
+  if (window.hasOwnProperty('web3')) {
+    // Note a closure can't be used for this var because some sites like
+    // www.wnyc.org do a second script execution via eval for some reason.
+    window.__disableDappDetectionInsertion = true
+    // Likely oldWeb3 is undefined and it has a property only because
+    // we defined it. Some sites like wnyc.org are evaling all scripts
+    // that exist again, so this is protection against multiple calls.
+    if (window.web3 === undefined) {
+      return
+    }
+    __insertDappDetected()
+  } else {
+    var oldWeb3 = window.web3
+    Object.defineProperty(window, 'web3', {
+      configurable: true,
+      set: function (val) {
+        if (!window.__disableDappDetectionInsertion)
+          __insertDappDetected()
+        oldWeb3 = val
+      },
+      get: function () {
+        if (!window.__disableDappDetectionInsertion)
+          __insertDappDetected()
+        return oldWeb3
+      }
+    })
+  }
+})()</script></head>
+<body>
+<address class="topnav">
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/index-en.html">home page</a> -&gt;
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/edu/index.html">teaching</a> -&gt;
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/edu/grafe/index.html">graph algorithms</a> -&gt;
+  <span class="selflink">Bellman-Ford algorithm</span>
+</address>
+
+<h1><center>Graph algorithms - Bellman-Ford algorithm</center></h1>
+
+<h2>Problem</h2>
+Given a graph with no negative costs cycles and two vertices <i>s</i> and <i>t</i>,
+find a minimum cost walk from <i>s</i> to <i>t</i>.
+
+<h2>Idea</h2>
+
+<p>The algorithm keeps two mappings:</p><ul>
+  <li><i>dist[x]</i> = the cost of the minimum cost walk from <i>s</i> to <i>x</i>
+    known so far
+  </li><li><i>prev[x]</i> = the vertex just before <i>x</i> on the walk above.
+</li></ul><p></p>
+
+<p>Initially, <i>dist[s]</i>=0 and <i>dist[x]</i>=&#8734; for <i>x &#8800; s</i>;
+this reflects the fact that we only know a zero-length walk from <i>s</i> to itself.
+
+</p><p>Then, we repeatedly performs a <i>relaxation</i> operation defined as follows:
+if <i>(x,y)</i> is an edge such that <i>dist[y] &gt; dist[x] + c(x,y)</i>, then we set:</p><ul>
+  <li>dist[y] = dist[x] + c(x,y)
+  </li><li>prev[y] = x
+</li></ul><p></p>
+
+<p>The idea of the relaxation operation is that, if we realize that we have a better
+walk leading to <i>y</i> by using <i>(x,y)</i> as its last edge, compared to
+what we know so far, we update our knowledge.</p>
+
+<h2>The algorithm</h2>
+
+<pre>Input:
+    G : directed graph with costs
+    s, t : two vertices
+Output:
+    dist : a map that associates, to each accessible vertex, the cost of the minimum
+            cost walk from s to it
+    prev : a map that maps each accessible vertex to its predecessor on a path from s to it
+Algorithm:
+    for x in X do
+        dist[x] = &#8734;
+    end for
+    dist[s] = 0
+    changed = true
+    while changed do
+        changed = false
+        for (x,y) in E do
+            if dist[y] &gt; dist[x] + c(x,y) then
+                dist[y] = dist[x] + c(x, y)
+                prev[y] = x
+                changed = true
+            end if
+        end for
+    end while
+</pre>
+
+<h2>Proof of correctness</h2>
+
+<p>The proof is in three parts:</p><ul>
+  <li>at each stage, <i>dist</i> and <i>prev</i> correspond to existing walks (this
+    comes immediately from how the relaxation operation works;
+  </li><li>the algorithm finishes;
+  </li><li>when the algorithm finishes, <i>dist[x] = d(s,x)</i> for all vertices <i>x</i>.
+</li></ul><p></p>
+
+<p>For the last two parts, we notice that, at iteration <i>k</i>, we have that
+<i>dist[x] &#8804; w<sub>k,x</sub></i> (see the <a href="http://www.cs.ubbcluj.ro/~rlupsa/edu/grafe/min-walk-dp.html">Bellman's dynamic
+programming algorithm</a>). This makes the Bellman-Ford finish in at most <i>n-1</i>
+iterations and end with the correct distances.</p>
+
+<address class="signature">
+<a href="http://www.cs.ubbcluj.ro/~rlupsa/index-en.html">Radu-Lucian LUP&#350;A</a><br>
+2016-03-15
+</address>
+
+</body></html>

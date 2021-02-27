@@ -1,0 +1,328 @@
+
+<!-- saved from url=(0051)http://www.cs.ubbcluj.ro/~rlupsa/edu/grafe/dag.html -->
+<html><script data-dapp-detection="">
+(function() {
+  let alreadyInsertedMetaTag = false
+
+  function __insertDappDetected() {
+    if (!alreadyInsertedMetaTag) {
+      const meta = document.createElement('meta')
+      meta.name = 'dapp-detected'
+      document.head.appendChild(meta)
+      alreadyInsertedMetaTag = true
+    }
+  }
+
+  if (window.hasOwnProperty('web3')) {
+    // Note a closure can't be used for this var because some sites like
+    // www.wnyc.org do a second script execution via eval for some reason.
+    window.__disableDappDetectionInsertion = true
+    // Likely oldWeb3 is undefined and it has a property only because
+    // we defined it. Some sites like wnyc.org are evaling all scripts
+    // that exist again, so this is protection against multiple calls.
+    if (window.web3 === undefined) {
+      return
+    }
+    __insertDappDetected()
+  } else {
+    var oldWeb3 = window.web3
+    Object.defineProperty(window, 'web3', {
+      configurable: true,
+      set: function (val) {
+        if (!window.__disableDappDetectionInsertion)
+          __insertDappDetected()
+        oldWeb3 = val
+      },
+      get: function () {
+        if (!window.__disableDappDetectionInsertion)
+          __insertDappDetected()
+        return oldWeb3
+      }
+    })
+  }
+})()</script><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+ <link rel="StyleSheet" href="./directed_acyclic_graphs(DAGs)_files/normal-style.css" type="text/css">
+ <title>Graph algorithms - Directed acyclic graphs (DAGs)</title>
+</head>
+<body>
+<address class="topnav">
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/index-en.html">home page</a> -&gt;
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/edu/index.html">teaching</a> -&gt;
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/edu/grafe/index.html">graph algorithms</a> -&gt;
+  <span class="selflink">Directed acyclic graphs (DAGs)</span>
+</address>
+
+<h1><center>Graph algorithms - Directed acyclic graphs (DAGs)</center></h1>
+
+<!-- ================================================= -->
+<h2>Basics</h2>
+<p> A <i>directed acyclic graph</i> (DAG) is a directed graph having no cycle.</p>
+
+<p>Directed acyclic graphs are often used for representing dependency relations,
+for example:</p><ul>
+  <li>vertices are activities in a project, and an edge <i>(x,y)</i> means that
+    activity <i>y</i> cannot start before activity <i>x</i> is completed (because
+    <i>y</i> depends on the end product of <i>x</i>);
+  </li><li>vertices are topics in a book, and an edge <i>(x,y)</i> means that topic <i>y</i>
+    cannot be understood without first understanding topic <i>x</i>;
+  </li><li>vertices are computation steps or computation results, and an edge <i>(x,y)</i>
+    means that computing <i>y</i> takes as inputs the result for <i>x</i>.
+</li></ul><p></p>
+
+<p>DAG example</p>
+<p><img src="./directed_acyclic_graphs(DAGs)_files/dag.png"></p>
+
+<p>Cycle-containing graph</p>
+<p><img src="./directed_acyclic_graphs(DAGs)_files/dag-nondag.png"></p>
+
+<!-- ================================================= -->
+<h2>Topological sorting</h2>
+
+<p>Often, when dependency relations are involved, the following two problems need to be
+solved:</p><ol>
+  <li>Find if there is any circular dependency (in other words, if the dependency graph
+    is a DAG or not);
+  </li><li>Put the items in an order compatible with the dependency restrictions, that is,
+    put the vertices in a list such that whenever there is an edge <i>(x,y)</i>,
+    then <i>x</i> comes before <i>y</i> in that list.
+</li></ol><p></p>
+
+<p>The latter problem is called <i>topological sorting</i>. Note that the solution
+is not, generally, unique.</p>
+
+<p>Finding if a directed graph has cycles or not is done while attempting to do the topological sorting.</p>
+
+<p><b>Property:</b> Topological sorting is possible, for a directed graph, if and only if
+there are no cycles in the graph.</p>
+
+<p>If a graph has a cycle, then it is obvious that topologically sorting it is impossible:
+Suppose we have a topological sorting,
+and let <i>x</i> be the first vertex from the cycle that appears in the topological
+sorting. Then, let <i>y</i> be the preceeding vertex in that cycle; we have the edge
+<i>(y,x)</i>, but <i>y</i> comes after <i>x</i> in the topological sorting, which is not
+allowed.</p>
+
+<p>For proving the other way round, we use the construction algorithms below. We'll prove
+that neither one fails unless there is a cycle in the input graph.</p>
+
+<!-- ================================================= -->
+<h3>Predecessor counting algorithm</h3>
+
+<p>The ideea is the following: we take a vertex with no predecessors, we put it on the
+sorted list, and we eliminate it from the graph. Then, we take a vertex with no predecessors
+from the remaining graph and continue the same way.</p>
+
+<p>Finally, we either process all vertices
+and end up with the topologically sorted list, or we cannot get a vertex with
+no predecessors, which means we have a cycle. Indeed, if, at some point, we cannot
+get a vertex with no predecessors, we can prove that the remaining graph at that point
+has a cycle. Take a vertex, take one of its predecessors (at least one exists), take a
+predecessor of its, and so on, obtaining an infinite sequence. But the set of vertices
+is finite, so, we must have repeating vertices, i., e., a cycle.</p>
+
+<p>It remains to get an efficient way to implement finding vertices with no
+predecessors and removing them from the graph. Here, the idea is to not actually remove
+vertices, but to keep, for each vertex, a counter of predecessors still in the graph.
+The algorithm follows:</p>
+
+<pre>Input:
+    G : directed graph
+Output:
+    sorted : a list of vertices in topological sorting order, or null if G has cycles
+Algorithm:
+    sorted = emptyList
+    Queue q
+    Dictionary count
+    for x in X do
+        count[x] = indeg(x)
+        if count[x] == 0 then
+            q.enqueue(x)
+        endif
+    endfor
+    while not q.isEmpty() do
+        x = q.dequeue()
+        sorted.append(x)
+        for y in Nout(x) do
+            count[y] = count[y] - 1
+            if count[y] == 0 then
+                q.enqueue(y)
+            endif
+        endfor
+    endwhile
+    if sorted.size() &lt; X.size() then
+        sorted = null
+    endif
+</pre>
+
+<!-- ================================================= -->
+<h3>Depth-first search based algorithm</h3>
+
+<p>This is based on the Murphy's law <i>whatever you're starting to do, you realize
+something else should have been done first.</i> Only that, when we discover that,
+we do that something and, finally, do our activity. This leads to the following simplified
+algorithm:</p>
+<pre>do(x):
+    for y in Nin(x)
+        if y not yet done then
+            do(y)
+        endif
+    endfor
+    actually do x
+</pre>
+
+<p>Performing the above requires:</p><ul>
+  <li>a list where to store vertices on <i>actually do x</i>;
+  </li><li>a fast way to verify if an activity was performed (this would be a set with the same
+      content as the sorted list, but with quicker access by value);
+  </li><li>a way to detect cyclic dependencies; for this, we will detect whenever performing
+      <i>do(x)</i> invokes again <i>do(x)</i> before doing <i>actually do x</i>.
+</li></ul><p></p>
+
+<p>The result is:</p>
+
+<pre>Input:
+    G : directed graph
+Output:
+    sorted : a list of vertices in topological sorting order, or null if G has cycles
+Subalgotithm TopoSortDFS(Graph G, Vertex x, List sorted, Set fullyProcessed, Set inProcess)
+    inProcess.add(x)
+    for y in Nin(x)
+        if y in inProcess then
+            return false
+        else if y not in fullyProcessed then
+            ok = TopoSortDFS(G, y, sorted, fullyProcessed, inProcess)
+            if not ok then
+                return false
+            endif
+        endif
+    endfor
+    inProcess.remove(x)
+    sorted.append(x)
+    fullyProcessed.add(x)
+    return true
+
+Algorithm:
+    sorted = emptyList
+    fullyProcess = emptySet
+    inProcess = emptySet
+    for x in X do
+        if x not in fullyProcessed then
+            ok = TopoSortDFS(G, x, sorted, fullyProcessed, inProcess)
+            if not ok then
+                sorted = null
+                return
+            endif
+        endif
+    endfor
+</pre>
+
+<!-- ================================================= -->
+<h2>DAGs, strongly connected components, and preorder relations</h2>
+
+<p><b>Property:</b> A directed graph is a DAG if and only if it has no loops and each
+of its strongly connected components consists in a single vertex.</p>
+
+<p>Proof: A DAG obviously cannot have loops. In addition, if there are two distinct vertices
+<i>x</i> and <i>y</i> in the same strongly connected component (SCC), then there is a path
+from <i>x</i> to <i>y</i> and a path from <i>y</i> to <i>x</i> and those paths together
+form a cycle; therefore, in a DAG, any SCC can have at most 1 vertex. For the other way
+round, let's prove that a graph with no loops and with only 1-vertex SCCs is DAG. Suppose
+the contrary, that we have a cycle. If the cycle has length 1, it is a loop. If the cycle
+is longer, it has at least 2 vertices, which lie in the same SCC.
+Thus, we have a contradiction.</p>
+
+<p>Note the similarity between the topological sorting DFS-based algorthm and the
+algorithm for determining the SCCs. This is not a coincidence and, moreover,
+the SCC algorithm finds the SCC in a topological order, in the
+<i>condensed graph</i> defined below.</p>
+
+<p>Given a graph <i>G</i> that may have cycles, we can construct the <i>condensed graph
+G'</i> as follows: each SCC of <i>G</i> appears as a vertex of <i>G'</i>, and we put an
+edge <i>(A, B)</i> in <i>G'</i> if and only if there is at least an edge in <i>G</i> between
+a vertex of component <i>A</i> and a vertex of component <i>B</i>.</p>
+
+<p>It is easy to see that <i>G'</i> is a DAG. Moerover, the SCC algorithm determines
+the SCCs in a topological order with respect to <i>G'</i>.</p>
+
+<!-- ================================================= -->
+<h2>Scheduling problem</h2>
+
+<p><b>Input:</b> you are given a list of activities to be done for a project, and each activity has a list of prerequisite activities and a duration</p>
+
+<p><b>Output:</b> a scheduling of the activities (the starting and the ending time for each activity). If activity B depends on activity A, then B must start when or after A ends;
+however, two activities that do not depend on each other can be executed in parallel.</p>
+
+<p>The goal is to execute the project as quickly as possible - from the time the first activity or activities start, to the time the last activity or activities end.</p>
+
+<p>There may be several valid scheduling, all yielding the same total project duration. Two of them are more interesting:</p><ul>
+  <li><em>Earliest scheduling,</em> where every activity is scheduled as early as possible;
+  </li><li><em>Latest scheduling,</em> where every activity is scheduled as late as possible - but while keeping the project finish as early as possible;
+</li></ul>
+
+<p><b>Example</b>
+<table border="1px">
+  <tbody><tr>
+    <th>Act.</th>
+    <th>Prerequisites</th>
+    <th>Duration</th>
+    <th>Earliest</th>
+    <th>Latest</th>
+  </tr>
+  <tr>
+    <td>0</td>
+    <td>-</td>
+    <td>1</td>
+    <td>0-1</td>
+    <td>1-2</td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td>-</td>
+    <td>2</td>
+    <td>0-2</td>
+    <td>0-2</td>
+  </tr>
+  <tr>
+    <td>6</td>
+    <td>0,5</td>
+    <td>5</td>
+    <td>2-7</td>
+    <td>2-7</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>5</td>
+    <td>1</td>
+    <td>2-3</td>
+    <td>6-7</td>
+  </tr>
+  <tr>
+    <td>1</td>
+    <td>6</td>
+    <td>2</td>
+    <td>7-9</td>
+    <td>8-10</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>4,6</td>
+    <td>2</td>
+    <td>7-9</td>
+    <td>7-9</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>3,6</td>
+    <td>1</td>
+    <td>9-10</td>
+    <td>9-10</td>
+  </tr>
+</tbody></table>
+
+
+</p><address class="signature">
+<a href="http://www.cs.ubbcluj.ro/~rlupsa/index-en.html">Radu-Lucian LUP&#350;A</a><br>
+2020-05-08
+</address>
+
+</body></html>

@@ -1,0 +1,151 @@
+
+<!-- saved from url=(0056)http://www.cs.ubbcluj.ro/~rlupsa/edu/grafe/dijkstra.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+ <link rel="StyleSheet" href="./Dijkstra&#39;s_algorithm_files/normal-style.css" type="text/css">
+ <title>Graph algorithms - Dijkstra's algorithm</title>
+<script data-dapp-detection="">
+(function() {
+  let alreadyInsertedMetaTag = false
+
+  function __insertDappDetected() {
+    if (!alreadyInsertedMetaTag) {
+      const meta = document.createElement('meta')
+      meta.name = 'dapp-detected'
+      document.head.appendChild(meta)
+      alreadyInsertedMetaTag = true
+    }
+  }
+
+  if (window.hasOwnProperty('web3')) {
+    // Note a closure can't be used for this var because some sites like
+    // www.wnyc.org do a second script execution via eval for some reason.
+    window.__disableDappDetectionInsertion = true
+    // Likely oldWeb3 is undefined and it has a property only because
+    // we defined it. Some sites like wnyc.org are evaling all scripts
+    // that exist again, so this is protection against multiple calls.
+    if (window.web3 === undefined) {
+      return
+    }
+    __insertDappDetected()
+  } else {
+    var oldWeb3 = window.web3
+    Object.defineProperty(window, 'web3', {
+      configurable: true,
+      set: function (val) {
+        if (!window.__disableDappDetectionInsertion)
+          __insertDappDetected()
+        oldWeb3 = val
+      },
+      get: function () {
+        if (!window.__disableDappDetectionInsertion)
+          __insertDappDetected()
+        return oldWeb3
+      }
+    })
+  }
+})()</script></head>
+<body>
+<address class="topnav">
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/index-en.html">home page</a> -&gt;
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/edu/index.html">teaching</a> -&gt;
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/edu/grafe/index.html">graph algorithms</a> -&gt;
+  <span class="selflink">Dijkstra's algorithm</span>
+</address>
+
+<h1><center>Graph algorithms - Dijkstra's algorithm</center></h1>
+
+<h2>Problem</h2>
+Given a graph with non-negative costs and two vertices <i>s</i> and <i>t</i>,
+find a minimum cost walk from <i>s</i> to <i>t</i>.
+
+<h2>Idea</h2>
+
+<p>Dijkstra's algorithm still relies on Bellman's optimality principle; however, it computes
+distances from the starting vertex in increasing order of the distances. This way, the distance
+from start to a given vertex doesn't have to be recomputed after the vertex is processed.</p>
+
+<p>This way, Dijkstra's algorithm looks a bit like the breadth-first traversal; however,
+the queue is replaced by a priority queue where the top vertex is the closest to the starting
+vertex.</p>
+
+<h2>The algorithm</h2>
+
+<pre>Input:
+    G : directed graph with costs
+    s, t : two vertices
+Output:
+    dist : a map that associates, to each accessible vertex, the cost of the minimum
+            cost walk from s to it
+    prev : a map that maps each accessible vertex to its predecessor on a path from s to it
+Algorithm:
+    PriorityQueue q
+    Dictionary prev
+    Dictionary dist
+    q.enqueue(s, 0)              // second argument is priority
+    dist[s] = 0
+    found = false
+    while not q.isEmpty() and not found do
+        x = q.dequeue()      // dequeues the element with minimum value of priority
+        for y in Nout(x) do
+            if y not in dist.keys() or dist[x] + cost(x,y) &lt; dist[y] then
+                dist[y] = dist[x] + cost(x, y)
+                q.enqueue(y, dist[y])
+                prev[y] = x
+            end if
+        end for
+        if x == t then
+            found = true
+        endif
+    end while
+</pre>
+
+<ul>
+  <li>If all costs are non-negative, the algorithm above doesn't put a vertex into
+    the priority queue once it was extracted and processed (see proof below).
+  </li><li>If there are negative costs, but no negative cost cycles, then a vertex may be
+    processed multiple times. However, if we eliminate the exit on dequeueing the target vertex,
+    the algorithm finishes after a finite number of steps and the result is correct.
+  </li><li>If there is a negative cost cycle accessible from the starting vertex, then the
+    algoritm can end with an incorrect result or it can run forever.
+</li></ul>
+
+<h2>Proof of correctness (for non-negative costs)</h2>
+
+<h3>Non-negative costs case</h3>
+<p>
+We claim that, when a vertex is dequeued from the priority queue,
+its <tt>dist</tt> is equal to the cost of the minimum cost walk from the start to it.
+</p>
+<p>
+Suppose the contrary. Let <i>x</i> be the first vertex for which the above statement is false.
+So, we have that <i>dist[x]</i> is strictly smaller than the cost of the minimum cost walk from
+<i>s</i> to <i>x</i>.</p>
+
+<p>Let <i>S</i> be the set of vertices that were in the priority queue and
+have already been dequeued from it when <i>x</i> gets dequeued (<i>x&#8713;S</i>).
+On the best walh from <i>s</i> to <i>x</i> the vertex just before <i>x</i> cannot be in <i>S</i>,
+otherwise <i>dist[x]</i> would have been correctly computed when that vertex was dequeued.</p>
+
+<p>So, let <i>(y,z)</i> be the first edge on the minimum cost walk from <i>s</i> to <i>x</i>
+that exists <i>S</i>.</p>
+
+<p>In the image below, the upper walk is the minimum cost walk, and the lower one is the
+one found by the algorithm, and implied by the values of <i>dist</i> and <i>prev</i>.</p>
+
+<img src="./Dijkstra&#39;s_algorithm_files/dijkstra-proof.svg">
+
+<p>However, since <i>x</i> is at the top of the priority queue and not <i>z</i>,
+we have that <i>cost(s,...,y,z) &#8805; cost(s,...,x)</i> and, since all edges have non-negative costs,
+<i>cost(z,...,x) &#8805; 0</i>. Therefore, the bottom walk, found by the algorithm, cannot have a
+larger cost than the minimum cost walk, which prove our claim.</p>
+
+<h3>The case of negative costs</h3>
+
+
+
+<address class="signature">
+<a href="http://www.cs.ubbcluj.ro/~rlupsa/index-en.html">Radu-Lucian LUP&#350;A</a><br>
+2016-03-14
+</address>
+
+</body></html>

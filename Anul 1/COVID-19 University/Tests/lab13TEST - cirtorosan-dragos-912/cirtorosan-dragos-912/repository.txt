@@ -1,0 +1,6 @@
+Okeanos | Market Model | 2755 | red
+Okeanos | Writer Model | 2399 | blue
+BigBoi | Eating Bot | 3001 | green
+Chonk | Speaker | 3251 | red
+Chonk | Portable Fridge | 3612 | purple
+Chonk | Miner Model | 3199 | brown

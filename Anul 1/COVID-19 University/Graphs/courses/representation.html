@@ -1,0 +1,275 @@
+
+<!-- saved from url=(0062)http://www.cs.ubbcluj.ro/~rlupsa/edu/grafe/representation.html -->
+<html><script data-dapp-detection="">
+(function() {
+  let alreadyInsertedMetaTag = false
+
+  function __insertDappDetected() {
+    if (!alreadyInsertedMetaTag) {
+      const meta = document.createElement('meta')
+      meta.name = 'dapp-detected'
+      document.head.appendChild(meta)
+      alreadyInsertedMetaTag = true
+    }
+  }
+
+  if (window.hasOwnProperty('web3')) {
+    // Note a closure can't be used for this var because some sites like
+    // www.wnyc.org do a second script execution via eval for some reason.
+    window.__disableDappDetectionInsertion = true
+    // Likely oldWeb3 is undefined and it has a property only because
+    // we defined it. Some sites like wnyc.org are evaling all scripts
+    // that exist again, so this is protection against multiple calls.
+    if (window.web3 === undefined) {
+      return
+    }
+    __insertDappDetected()
+  } else {
+    var oldWeb3 = window.web3
+    Object.defineProperty(window, 'web3', {
+      configurable: true,
+      set: function (val) {
+        if (!window.__disableDappDetectionInsertion)
+          __insertDappDetected()
+        oldWeb3 = val
+      },
+      get: function () {
+        if (!window.__disableDappDetectionInsertion)
+          __insertDappDetected()
+        return oldWeb3
+      }
+    })
+  }
+})()</script><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+ <link rel="StyleSheet" href="./representation_files/normal-style.css" type="text/css">
+ <title>Graph algorithms - Graph representation</title>
+</head>
+<body>
+<address class="topnav">
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/index-en.html">home page</a> -&gt;
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/edu/index.html">teaching</a> -&gt;
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/edu/grafe/index.html">graph algorithms</a> -&gt;
+  <span class="selflink">Graph representation</span>
+</address>
+
+<h1><center>Graph algorithms - Graph representation</center></h1>
+
+<h2>Internal representation</h2>
+
+<p>Choosing a representation for the data is a matter of trade-offs.</p>
+
+<p>To choose a good representation for the data, we always need to know:</p><ul>
+  <li>What does the data look like — 
+      how big is the data and how large is each part relative to the others;
+  </li><li>What operations do we need to perform —
+      how often is each operation performed.
+</li></ul><p></p>
+
+<p>With respect to the graph size, we have <em>dense graphs</em>, where
+<i>m = &#920;(n<sup>2</sup>)</i>, <em>sparse graphs</em>, where 
+<i>m = O(n)</i>, and some intermediate graphs.</p>
+
+<p>In dense graphs, the degrees of most vertices are of the order of <i>&#920;(n)</i>.
+In sparse graphs, the degrees of most vertices are small (<i>O(1)</i>), but we can
+sometimes have a few vertices of very high degree.</p>
+
+<p>For instance, the graph corresponding to a road network is a sparse graph. If we
+represent intersections by vertices, each vertex (intersection) usually has 3 or 4
+neighbours (out of the hundreds of millions intersections in the world).</p>
+
+<p>Typically, we have the following operations to be performed:
+  </p><li>Given vertices x and y, test if (x,y) is an edge;
+  </li><li>Given a vertex x, parse the set N<sup>out</sup>(x) of outbound neighbours of x;
+  </li><li>Given a vertex x, parse the set N<sup>in</sup>(x) of inbound neighbours of x;
+  </li><li>Parse the set of vertices of the graph.
+<p></p>
+
+<h3>Adjacency matrix</h3>
+
+<p>We have a <i>n×n</i> matrix with 0-1 or true-false values, defined as:
+ a<sub>x,y</sub>=1 if there is an edge from x to y, and 0 otherwise.</p>.
+
+<p>Memory: <i>&#920;(n<sup>2</sup>)</i></p>
+<p>Test edge: <i>O(1)</i></p>
+<p>Parse neighbours: <i>&#920;(n)</i></p>
+
+<p><b>Summary:</b> Adjacency matrix is good for dense graphs, but bad for sparse graphs.
+Imagine a graph with 10<sup>8</sup> vertices and 4×10<sup>8</sup></p> edges, but which
+occupies 10<sup>16</sup> bits (or around 1000TB).<p></p>
+
+<h3>List of edges</h3>
+
+<p>It involves keeping a collection containing the edges (as pairs of vertices).
+It is compact for sparse graphs, but all operations need to parse the full collection.
+
+</p><p>Memory: <i>&#920;(m)</i></p>
+<p>Test edge: <i>O(m)</i></p>
+<p>Parse neighbours: <i>O(m)</i></p>
+
+<h3>List of neighbours</h3>
+
+<p>For each vertex, we keep a collection of its neighbours (inbound or outbound or both).</p>
+
+<p>The collection of neighbors may be a vector, a linked list, or a set. The set allows to
+quickly test if (x,y) is an edge if x has a lot of outbound neighbors; the vector is more
+compact and works reasonably if the above test is not very often performed or if the number
+of outbound neighbours is small.</p>
+
+<p>To get from the vertex to the set of neighbours, we can use a vector where the vertex
+is the index, or a map (dictionary) where the vertex is the key.</p>
+
+<p>The vector is more compact
+and faster, but requires the vertices to be consecutive integers (which, in turn, means that
+removing a vertex requires the re-numbering of all the vertices following it).</p> 
+
+<p>Memory: <i>&#920;(n+m)</i></p>
+<p>Test edge: <i>O(deg(x))</i></p>
+<p>Parse neighbours: <i>&#920;(deg(x))</i></p>
+
+
+<h2>External interface</h2>
+
+<ul>
+  <li>it is useful to separate implementation from the algorithms
+  </li><li>for particular problems, it is possible to have an implementation that is far from
+    the above implementations
+</li></ul>
+
+<p>Read-only operations</p>
+<ul>
+  <li>parse the outbound neighbours of a given vertex
+  </li><li>parse the inbound neighbours of a given vertex
+  </li><li>test if (x, y) is an edge
+  </li><li>parse all the vertices
+</li></ul>
+
+<p>Operations concerning edge costs</p>
+<ul>
+  <li>get the cost of the edge (x, y) (assuming it is an edge)
+  </li><li>parse the outbound/inbound edges of a given vertex, returning the cost of
+    the edge along with the neighbour vertex
+</li></ul>
+
+<h3>Type for vertex</h3>
+
+<ul>
+  <li>Must provide test for equality
+  </li><li>For efficiency, it should provide either a hash function or a comparator function
+  </li><li>It should be a template argument of the interface (for static typed languages)
+</li></ul>
+
+<p>Example, Python:</p>
+<pre>class Vertex:
+	def __eq__(self, other):
+		if not isinstance(other, self.__class__):
+			return False
+		...
+	def __ne__(self, other):
+		return not self.__eq__(other)
+	def __hash__(self):
+		...
+</pre>
+
+<p>Example, Java:</p>
+<pre>class Vertex:
+	boolean equals(Object other) {
+		if (! other instanceof Vertex) return false;
+		Vertex otherVertex = (Vertex)other;
+		...
+	}
+	int hashCode() {
+		...
+	}
+}
+</pre>
+
+<p>Example, C++</p>
+<pre>class Vertex:
+	bool operator==(Vertex const&amp; other) {
+		...
+	}
+	bool operator&lt;(Vertex const&amp; other) {
+		...
+	}
+}
+</pre>
+
+<h3>Return type for parse operations</h3>
+<dl>
+  <dh>collection, by value</dh><dd>Simple to describe; 
+    needs to perform a copy;
+    interface may be sensitive to the type of collection</dd>
+  <dh>collection, by reference</dh><dd>Simple to describe;
+    the graph may be inadvertently be changed if the outside code changes the result;
+    what to do if the internal representation is different?;
+    interface may be sensitive to the type of collection</dd>
+  <dh>iterable</dh><dd>No copy is needed; very flexible; a bit harder to implement</dd>
+</dl>
+
+<p>Example, Python:</p>
+<pre>class Graph:
+	# Return by reference; beware of possible change by user
+	def parseNout(self, x):
+		return self.__out[x]
+
+	# return a copy
+	def parseNout(self, x):
+		l = []
+		for y in self.__out[x]:
+			l.append(y)
+		return l
+
+	# return a copy
+	def parseNout(self, x):
+		return [y for y in self.__out[x]]
+
+	# return an iterable
+	def parseNout(self, x):
+		for y in self.__out[x]:
+			yield y
+
+for y in g.parseNout(x):
+	...
+# Beware:
+s = g.parseNout(x)
+s.append(...)
+
+</pre>
+
+<p>Example, Java:</p>
+<pre>class Graph<vertex>:
+	// return by reference
+	public Iterable<vertex> parseNout(Vertex x) {
+		return _out.get(x);
+	}
+	// return a copy
+	public Iterable&lt;Vertex&gt; parseNout(Vertex x) {
+		return new ArrayList&lt;Vertex&gt;(_out.get(x));
+	}
+	// return a read-only wrapper over the direct reference
+	public Iterable<vertex> parseNout(Vertex x) {
+		return Collections.unmodifyableList(_out.get(x));
+	}
+	private Map<vertex, list<vertex=""> &gt; _out;
+}
+</vertex,></vertex></vertex></vertex></pre>
+
+<p>Example, C++</p>
+<pre>class Graph:
+	// Standard C++ collection
+	class iterator {...}
+	iterator parseNout_begin(x){..}
+	iterator parseNout_end(x){..}
+	
+	// ad-hoc - return by value
+	list<vertex> parseNout(Vertex x)
+}
+</vertex></pre>
+
+
+<address class="signature">
+<a href="http://www.cs.ubbcluj.ro/~rlupsa/index-en.html">Radu-Lucian LUP&#350;A</a><br>
+2018-03-13
+</address>
+
+</li></body></html>

@@ -1,0 +1,25 @@
+body {
+    background-color:white;
+    background-image:none;
+    color:black}
+a:link {color: #0000FF}
+a:visited {color:#400080}
+a:active {color:#FF00FF}
+
+h1 {text-align:center}
+
+dt {font-style: italic;
+    font-weight:bold}
+dd {margin-left: 3em}
+
+address {
+    font-size: small;
+    padding: 0.5em;
+    background-color:#F0F0E0}
+    
+address.signature {margin-top: 1em}
+address.topnav {margin-bottom: 1em;
+	font-style: normal;
+	font-family:sans-serif}
+
+span.selflink {font-weight: bold}

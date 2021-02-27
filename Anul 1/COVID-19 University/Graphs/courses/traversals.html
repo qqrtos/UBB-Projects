@@ -1,0 +1,200 @@
+
+<!-- saved from url=(0057)http://www.cs.ubbcluj.ro/~rlupsa/edu/grafe/traversal.html -->
+<html><script data-dapp-detection="">
+(function() {
+  let alreadyInsertedMetaTag = false
+
+  function __insertDappDetected() {
+    if (!alreadyInsertedMetaTag) {
+      const meta = document.createElement('meta')
+      meta.name = 'dapp-detected'
+      document.head.appendChild(meta)
+      alreadyInsertedMetaTag = true
+    }
+  }
+
+  if (window.hasOwnProperty('web3')) {
+    // Note a closure can't be used for this var because some sites like
+    // www.wnyc.org do a second script execution via eval for some reason.
+    window.__disableDappDetectionInsertion = true
+    // Likely oldWeb3 is undefined and it has a property only because
+    // we defined it. Some sites like wnyc.org are evaling all scripts
+    // that exist again, so this is protection against multiple calls.
+    if (window.web3 === undefined) {
+      return
+    }
+    __insertDappDetected()
+  } else {
+    var oldWeb3 = window.web3
+    Object.defineProperty(window, 'web3', {
+      configurable: true,
+      set: function (val) {
+        if (!window.__disableDappDetectionInsertion)
+          __insertDappDetected()
+        oldWeb3 = val
+      },
+      get: function () {
+        if (!window.__disableDappDetectionInsertion)
+          __insertDappDetected()
+        return oldWeb3
+      }
+    })
+  }
+})()</script><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+ <link rel="StyleSheet" href="./traversals_files/normal-style.css" type="text/css">
+ <title>Graph algorithms - graph traversal</title>
+</head>
+<body>
+<address class="topnav">
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/index-en.html">home page</a> -&gt;
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/edu/index.html">teaching</a> -&gt;
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/edu/grafe/index.html">graph algorithms</a> -&gt;
+  <span class="selflink">graph traversal</span>
+</address>
+
+<h1><center>Graph algorithms - graph traversal</center></h1>
+
+<h2>Problem</h2>
+<ul>
+  <li>Given a starting vertex <i>s</i>, find all vertices that are accessible from it;
+  </li><li>Additionally, find a path, or a minimum length path, from the starting vertex
+    to a given destination vertex;
+</li></ul>
+
+<h2>Breadth-first traversal algorithm</h2>
+
+The algorith below visits all the vertices that are accessible from the start vertex.
+They are visited in the order of increasing distances from the starting vertex.
+A <i>previous</i> vector or map is computed, allowing us to compute the minimum length
+path from the starting vertex to any choosen accessible vertex.
+
+<pre>Input:
+    G : graph
+    s : a vertex
+Output:
+    accessible : the set of vertices that are accessible from s
+    prev : a map that maps each accessible vertex to its predecessor on a path from s to it
+Algorithm:
+    Queue q
+    Dictionary prev
+    Dictionary dist
+    Set visited
+    q.enqueue(s)
+    visited.add(s)
+    dist[s] = 0
+    while not q.isEmpty() do
+        x = q.dequeue()
+        for y in Nout(x) do
+            if y not in visited then
+                q.enqueue(y)
+                visited.add(y)
+                dist[y] = dist[x] + 1
+                prev[y] = x
+            end if
+        end for
+    end while
+    accessible = visited
+</pre>
+
+
+<h2>Accessibility - proof of correctness</h2>
+
+The proof comes in 3 parts:<ol>
+  <li>All returned vertices are accessible,
+  </li><li>The algorithm finishes,
+  </li><li>All accessible vertices are returned.
+</li></ol>
+
+<p>
+1. When a vertex is put into the queue, it is also put into the visited set, and no
+vertex is ever removed from the visited set, so any vertex in the queue is also in
+the visited set.
+</p><p>
+Next, we claim that, at each iteration,
+all vertices in the visited set are accessible
+from the start. At the beginning, this is true, because only the starting vertex is
+in the visited set. Next, a vertex is put in the visited set only if it is the outbound
+neighbour of a vertex in the queue; that vertex is therefore in the visited set and so
+it is accessible from start, so the added vertex is also accessible from start.
+
+</p><p>
+2. A vertex added to the queue only if not already in the visited set;
+it is also added in the visited set and never removed. So, any vertex gets at most once
+in the queue. So, the algorithm finishes in at most <i>n</i> iterations of the
+main loop. At each iteration, the inner loop executes outdeg(x) times, which sums up,
+on all iterations, to the total number of edges. So, the algorithm runs in
+<i>O(n+m)</i>.
+
+</p><p>
+3. Suppose, by contradiction, that there is a vertex <i>y</i> accessible from <i>s</i>
+(start), but which is not in the visited set at the end. Since <i>y</i> is accessible
+from <i>s</i>, there is a path
+<i>(s=x<sub>0</sub>,x<sub>1</sub>,...,x<sub>k</sub>=y)</i> from <i>s</i> to <i>y</i>.
+On that path, there must be a first vertex that is not visited, so, there is an
+<i>i</i> such that <i>x<sub>i</sub></i> is visited and <i>x<sub>i+1</sub></i> is
+not visited.
+</p><p>
+This means that there was a moment when <i>x<sub>i</sub></i> was visited and
+added to the queue, and, at a later time, there was an iteration when 
+<i>x<sub>i</sub></i> was processed. At that moment, <i>x<sub>i+1</sub></i>
+was discovered as an unvisited neighbour of <i>x<sub>i</sub></i> and added to the
+visited set, which contradicts the hypothesis.
+</p><p>
+3'. (alternative) We claim that, at each iteration, for any vertex <i>x</i>
+accessible from start, either <i>x</i> is in the visited set, or there is a walk
+going from start to <i>x</i> that has a vertex in the queue and that vertex is
+followed only by vertices not in the visited set.
+</p><p>
+The above condition is true in the beginning. When going from one iteration to the next,
+there are two changes: the top vertex is extracted from the queue, and its neighbours are
+inserted into the queue and into the visited set.
+</p><p>
+If <i>(s=x<sub>0</sub>,...,x<sub>j</sub>,x<sub>j+1</sub>,...,x<sub>k</sub>=t)</i> is a path
+from the starting vertex, <i>x<sub>j</sub></i> is the top of the queue and
+<i>x<sub>j+1</sub>,...,x<sub>k</sub></i> are not visited, then <i>x<sub>j+1</sub></i>
+is added to the queue and is followed only by non-visited vertices.
+</p><p>
+If, though, a vertex <i>x<sub>l</sub></i>, with <i>l&gt;j</i>, is added to the visited set,
+it is also added to the queue and is followed only by non-visited vertices.
+
+</p><h2>Minimum length path - proof of correctness</h2>
+<p>
+Note that <tt>dist</tt> contains the length of the path that would be retrieved
+from the <tt>prev</tt> map.
+</p><p>
+First, we remark that vertices are processed in groups with increasing values of
+<tt>dist</tt>. That is, first we process the start vertex that has a <tt>dist</tt>
+of 0, and the algorithm puts vertices with a <tt>dist</tt> of 1 in the queue.
+Then they are processed and the vertices put in the queue will have a <tt>dist</tt>
+of 2, then the vertices with <tt>dist</tt>=2 are processed and vertices with
+<tt>dist</tt>=3 are put into the queue, and so on
+</p>
+<p>
+Next, we prove that if <tt>dist[x]=k</tt>, then there exists a walk of length <tt>k</tt>
+from start to <tt>x</tt>. This can be proven by indunction on the iterations. Initially,
+we have a zero length walk from start to itself. Next, when we set <tt>dist</tt>
+for a vertex, it is set based on a previous vertex, as <tt>dist[y]=dist[x]+1</tt>.
+By induction hypothesis, there is a walk of length <tt>dist[x]</tt> from start to
+<tt>x</tt> and, by adding the edge <tt>(x,y)</tt> to it, we get a walk of length
+<tt>dist[x]+1</tt> from start to <tt>y</tt>.
+</p>
+<p>
+Finally, we will prove that <tt>dist[x]</tt> is indeed the length of the minimum length
+walk from start to <tt>x</tt>. Suppose
+<i>(s=x<sub>0</sub>, x<sub>1</sub>,...,x<sub>k</sub>)</i> is a minimum length walk
+from <i>s</i> to some vertex <i>x<sub>k</sub></i>. We claim that
+<tt>dist[</tt><i>x<sub>i</sub></i><tt>]</tt>=<i>i</i>, for all vertices in the walk.
+Let <i>i</i> be the first vertex for which the  claim is false. It means that,
+when <i>x<sub>i-1</sub></i> was processed, <i>x<sub>i</sub></i> was already processed
+(otherwise it would have got assigned a <tt>dist</tt> of <i>i</i>). But this means
+that it got an even smaller value (<tt>dist[</tt><i>x<sub>i</sub></i><tt>]</tt>&lt;<i>i</i>),
+which means that there is a strictly better walk to <i>x<sub>i</sub></i>, which
+contradicts our assumption.
+</p>
+
+<address class="signature">
+<a href="http://www.cs.ubbcluj.ro/~rlupsa/index-en.html">Radu-Lucian LUP&#350;A</a><br>
+2015-04-03
+</address>
+
+</body></html>

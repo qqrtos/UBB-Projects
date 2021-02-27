@@ -1,0 +1,98 @@
+
+<!-- saved from url=(0056)http://www.cs.ubbcluj.ro/~rlupsa/edu/grafe/glossary.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+ <link rel="StyleSheet" href="./definitions_files/normal-style.css" type="text/css">
+ <title>Graph algorithms - glossary</title>
+<script data-dapp-detection="">
+(function() {
+  let alreadyInsertedMetaTag = false
+
+  function __insertDappDetected() {
+    if (!alreadyInsertedMetaTag) {
+      const meta = document.createElement('meta')
+      meta.name = 'dapp-detected'
+      document.head.appendChild(meta)
+      alreadyInsertedMetaTag = true
+    }
+  }
+
+  if (window.hasOwnProperty('web3')) {
+    // Note a closure can't be used for this var because some sites like
+    // www.wnyc.org do a second script execution via eval for some reason.
+    window.__disableDappDetectionInsertion = true
+    // Likely oldWeb3 is undefined and it has a property only because
+    // we defined it. Some sites like wnyc.org are evaling all scripts
+    // that exist again, so this is protection against multiple calls.
+    if (window.web3 === undefined) {
+      return
+    }
+    __insertDappDetected()
+  } else {
+    var oldWeb3 = window.web3
+    Object.defineProperty(window, 'web3', {
+      configurable: true,
+      set: function (val) {
+        if (!window.__disableDappDetectionInsertion)
+          __insertDappDetected()
+        oldWeb3 = val
+      },
+      get: function () {
+        if (!window.__disableDappDetectionInsertion)
+          __insertDappDetected()
+        return oldWeb3
+      }
+    })
+  }
+})()</script></head>
+<body>
+<address class="topnav">
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/index-en.html">home page</a> -&gt;
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/edu/index.html">teaching</a> -&gt;
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/edu/grafe/index.html">graph algorithms</a> -&gt;
+  <span class="selflink">glossary</span>
+</address>
+
+<h1><center>Graph algorithms - glossary</center></h1>
+
+<dl>
+  <dh>accessible</dh><dd>A vertex <i>y</i> is <i>accessible</i> from <i>x</i> if there
+    exists at least one walk starting at <i>x</i> and ending at <i>y</i>. As walks of
+    length 0 are valid, this means that each vertex is accessible from itself</dd>
+  <dh>adjacency</dh><dd>vertex <i>y</i> is adjecent to vertex <i>x</i>
+    if there is an edge from <i>x</i> to <i>y</i></dd>
+  <dh>closed walk</dh><dd>a walk that starts and ends in the same vertex.</dd>
+  <dh>connected component</dh><dd>a subset of the set of vertices, so that each vertex
+    in the subset is accessible from each vertex of the subset, and which
+    is maximal (there is no proper superset with the same property).
+    The <i>connected component</i> term is used only for undirected graphs;
+    for a directed graph, the same concept is called <i>strongly connected
+    component.</i></dd>
+  <dh>cost of a walk</dh><dd>the sum of the costs of the edges that form that walk.
+    Note that a zero length walk has a cost of zero.</dd>
+  <dh>cycle</dh><dd>a closed walk of length at least 1, with no other repeating vertices
+    except for the fact that the first is the same as the last, and with no repeating
+    edges. In an undirected graph, this means that a cycle has the length at least
+    3.</dd>
+  <dh>incidency</dh><dd>vertex <i>x</i> is incident to edge <i>e</i> if
+    <i>x</i> is an endpoint of <i>e</i></dd>
+  <dh>length of a walk</dh><dd>the number of edges along the walk, or, equivalently,
+    the number of vertices minus one.</dd>
+  <dh>path</dh><dd>A walk with no repeating vertices</dd>
+  <dh>strongly connected component</dh><dd>see <i>connected component</i></dd>
+  <dh>walk</dh><dd>A sequence of 1 or more vertices,
+    <i>(x<sub>0</sub>, x<sub>1</sub>,...,x<sub>k</sub>)</i> such that each vertex
+    has an edge to the next one. The <i>length</i> of the walk is the number of
+    edges along it, or, equivalently, the number of vertices minus one. Repeating
+    vertices or edges are allowed. A walk of length 0 is allowed; it has a single
+    vertex (so the starting vertex is the same as the destination vertex) and zero
+    edges.</dd>
+</dl>
+
+<address class="signature">
+<a href="http://www.cs.ubbcluj.ro/~rlupsa/index-en.html">Radu-Lucian LUP&#350;A</a><br>
+2015-04-03
+</address>
+
+
+
+</body></html>

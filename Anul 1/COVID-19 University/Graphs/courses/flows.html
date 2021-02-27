@@ -1,0 +1,180 @@
+
+<!-- saved from url=(0052)http://www.cs.ubbcluj.ro/~rlupsa/edu/grafe/flow.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+ <link rel="StyleSheet" href="./flows_files/normal-style.css" type="text/css">
+ <title>Graph algorithms - Flows</title>
+<script data-dapp-detection="">
+(function() {
+  let alreadyInsertedMetaTag = false
+
+  function __insertDappDetected() {
+    if (!alreadyInsertedMetaTag) {
+      const meta = document.createElement('meta')
+      meta.name = 'dapp-detected'
+      document.head.appendChild(meta)
+      alreadyInsertedMetaTag = true
+    }
+  }
+
+  if (window.hasOwnProperty('web3')) {
+    // Note a closure can't be used for this var because some sites like
+    // www.wnyc.org do a second script execution via eval for some reason.
+    window.__disableDappDetectionInsertion = true
+    // Likely oldWeb3 is undefined and it has a property only because
+    // we defined it. Some sites like wnyc.org are evaling all scripts
+    // that exist again, so this is protection against multiple calls.
+    if (window.web3 === undefined) {
+      return
+    }
+    __insertDappDetected()
+  } else {
+    var oldWeb3 = window.web3
+    Object.defineProperty(window, 'web3', {
+      configurable: true,
+      set: function (val) {
+        if (!window.__disableDappDetectionInsertion)
+          __insertDappDetected()
+        oldWeb3 = val
+      },
+      get: function () {
+        if (!window.__disableDappDetectionInsertion)
+          __insertDappDetected()
+        return oldWeb3
+      }
+    })
+  }
+})()</script></head>
+<body>
+<address class="topnav">
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/index-en.html">home page</a> -&gt;
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/edu/index.html">teaching</a> -&gt;
+  <a href="http://www.cs.ubbcluj.ro/~rlupsa/edu/grafe/index.html">graph algorithms</a> -&gt;
+  <span class="selflink">Flows</span>
+</address>
+
+<h1><center>Graph algorithms - Flows</center></h1>
+
+<h2>Transport graph and maximum flow</h2>
+
+<p>In a transport graph, we have a source vertex, where a producer of some commodity
+is located, a destination vertex, and all the other vertices act as intermediates.
+Each edge represents the possibility to transport a certain amount of that commodity;
+the amount is the <i>capacity</i> of that edge.</p>
+
+<p>The goal is to plan how to transport a maximum amount of that commodity from
+the source to the destination.</p>
+
+<p>More formally, we have:</p><ul>
+  <li>a directed graph G=(X,E);
+  </li><li>a source vertex <i>s</i> and a destination vertex <i>t</i>;
+  </li><li>each edge <i>(x,y)</i> has a positive capacity <i>cap(x,y)</i>;
+</li></ul><p></p>
+
+<p>A <i>flow</i> can be established through the graph. A flow is an assignment of a flow value to each edge, such that:</p><ul>
+  <li>the flow through each edge is between zero and the capacity of that edge: 0 &#8804; flow(x,y) &#8804; cap(x,y)
+  </li><li>for each vertex, except for the source or the destination, the inbound flow is equal to the outbound flow:
+    for any x&#8712;X, &#8721;<sub>y&#8712;N<sup>in</sup>(x)</sub>flow(y,x) = &#8721;<sub>y&#8712;N<sup>out</sup>(x)</sub>flow(x,y)
+</li></ul><p></p>
+
+<p>For the source vertex, there is a positive net outbound flow. That value is called the <i>total value of the flow</i>.
+It is v<sub>flow</sub> = &#8721;<sub>y&#8712;N<sup>out</sup>(s)</sub>flow(s,y) - &#8721;<sub>y&#8712;N<sup>in</sup>(s)</sub>flow(y,s).</p>
+
+<p>It can be easily shown that the total flow value is equal to the net inbound flow into the destination vertex:
+v<sub>flow</sub> = &#8721;<sub>y&#8712;N<sup>in</sup>(t)</sub>flow(y,t) - &#8721;<sub>y&#8712;N<sup>out</sup>(t)</sub>flow(t,y).</p>
+
+<p>The classical problem to be solved is to set a maximum flow in the transport graph, that is, to maximize
+the total flow value among all possible flows.</p>
+
+<h2>Cuts, capacities, and the flow across a cut</h2>
+
+<p>To analize the flow, we need the concept of a <i>cut</i>. A cut is, essentially, a partitioning of the vertices into
+two sets: one containing the source and the other containing the destination. Then, we analyse the capacities and the
+flow along the edges between vertices in one subset and the other subset.</p>
+
+<p>The <i>net flow</i> across the cut is the total "left to right" flow (the total flow along the edges leading from the
+set containing the source to the set containing the destination), minus the "right to left" flow. Formally, assuming
+that the cut is (A, X\A), with s&#8712;A and t&#8712; X\A:<br>
+flow(A,X\A) = &#8721;<sub>(x,y)&#8712;E, x&#8712; A, y &#8712; X\A</sub>flow(x,y) -
+  &#8721;<sub>(x,y)&#8712;E, x&#8712; X\A, y &#8712; A</sub>flow(x,y)</p>
+
+<p>The capacity of the cut is, however, only the "left to right" capacity:
+cap(A,X\A) = &#8721;<sub>(x,y)&#8712;E, x&#8712; A, y &#8712; X\A</sub>cap(x,y)</p>
+
+<p>It is clear that, for any cut, the flow across the cut is less than or equal to the capacity of the cut. The
+maximum flow is obtained when all "right to left" edges are saturated and all "left to right" edges have zero flow.</p>
+
+<p>On the other hand, the flow across any cut is the same, and is equal to the total value of the flow.
+(Actually, the total value of the flow is the flow across a cut that has only the source vertex on the "left", and
+all other vertices on the "right".)</p>
+
+<h2>The naïve algorithm</h2>
+
+<p>A flow of zero everywhere is clearly a valid flow. Starting from it, we can increase the flow while keeping it valid
+by the following approach:</p><ul>
+  <li>find a path from the source to the destination, consisting only of non-saturated edges;
+  </li><li>compute the <i>capacity of the path</i> as being the smalles of the residual capacities of its edges (the residual
+    capacity of an edge is the difference between the capacity and the current flow through that edge);
+  </li><li>increase the flow, on all the edges of the path, with a value equal to that capacity.
+</li></ul><p></p>
+
+<p>It is clear that, by following the steps above, the flow remains valid. However, we may end up with a flow that cannot
+be increased by this approach, yet a flow of larger total value still exists.</p>
+
+<h2>Ford-Fulkerson algorithm and Ford-Fulkerson theorem</h2>
+
+<p>A correct algorithm can be devised starting from the (incorrect) naïve algorithm. This algorithm
+(Ford-Fulkerson) is the following:</p><ol>
+  <li>again, start with a zero flow
+  </li><li>for the current flow, construct a <i>residual graph</i> containing the same vertices as the original graph, but:<ul <li="">for each non-saturated edge of the original graph, put an edge with the same direction and with the remaining capacity
+      (the capacity is the difference between the original capacity and the current flow through that edge)
+    <li>for each edge with non-zero flow, put an edge in the reverse direction and with a capacity equal to the value of that
+      flow (this edge signifies that the flow can be increased in the reverse direction by decreasing the forward flow).
+      Note that this is the only difference compared to the naïve algorithm.
+  </li></ul>
+  </li><li>find a path from source to destination in the residual graph;
+  </li><li>compute the capacity of the above path;
+  </li><li>update the flow: for forward edges, increase the flow by a value equal to the capacity of the path; for backward
+    edges, decrease the flow on the corresponding forward edges by the same value.
+  </li><li>repeat the steps 2-5 until no path can be found in the residual graph from source to destination
+</li></ol><p></p>
+
+<p>To show that the algorithm produces the optimal flow, consider the cut having on the left-hand side all the
+vertices that are accessible from the source in the residual graph (since there is no path to destination, the destination
+is on the right-hand side of the cut). No edge can exist in the residual graph across the cut from left to right.
+Because of the way the residual graph was constructed, it follows that the left-to-right edges in the original
+graph are saturated and the right-to-left edges have zero flow. So, that cut is saturated. So, no larger flow can exist.</p>
+
+<p>It follows that the value of the maximum flow is equal to the capacity of the minimum cut. This statement is called
+the Ford-Fulkerson theorem.</p>
+
+<h3>Example</h3>
+
+<p>Input graph:</p>
+
+<p><img src="./flows_files/fulkerson-input.png">
+
+</p><p>After augmenting path 1,2,3,6 (capacity = 1):</p>
+
+<p><img src="./flows_files/fulkerson-flow1.png"> with residual graph <img src="./flows_files/fulkerson-residual1.png">
+
+</p><p>After augmenting path 1,4,5,6 (capacity = 3):</p>
+
+<p><img src="./flows_files/fulkerson-flow2.png"> with residual graph <img src="./flows_files/fulkerson-residual2.png">
+
+</p><p>After augmenting path 1,2,5,6 (capacity = 1):</p>
+
+<p><img src="./flows_files/fulkerson-flow3.png"> with residual graph <img src="./flows_files/fulkerson-residual3.png">
+
+</p><p>The naïve algorithm stops here. Ford-Fulkerson, however, finds the augmenting path 1,2,5,4,3,6 (capacity = 1):</p>
+
+<p><img src="./flows_files/fulkerson-flow4.png"> with residual graph <img src="./flows_files/fulkerson-residual4.png">
+
+</p><p>No augmenting path can be found any more. The cut {1} to {2,3,4,5,6} is saturated (capacity=6, flow=6).</p>
+
+
+<address class="signature">
+<a href="http://www.cs.ubbcluj.ro/~rlupsa/index-en.html">Radu-Lucian LUP&#350;A</a><br>
+2020-05-29
+</address>
+
+</body></html>
