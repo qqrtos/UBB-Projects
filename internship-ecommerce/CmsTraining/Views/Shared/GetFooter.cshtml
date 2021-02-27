@@ -1,0 +1,68 @@
+﻿@using EPiServer.Core
+@using EPiServer.Web.Mvc.Html
+
+@model CmsTraining.Models.Blocks.FooterBlock
+
+
+<link rel="stylesheet" type="text/css" href="~/Content/FooterStyle.css">
+
+<html>
+<body>
+    <div class="wrap" id="footerrow">
+      
+            <div class="container">
+                <span class="visible-xs ColumnName col-lg-4 col-md-4 col-sm-4 col-xs-12" data-toggle="collapse" data-target="#CategoriesCollapse">
+                    Categories
+                </span>
+                <div class="hidden-xs col-lg-4 col-md-4 col-sm-4 visible-sm visible-md visible-lg CategoriesCollapse" id="CategoriesCollapse">
+                    <div class="CategoryBlock">
+                        <span class="ColumnName hidden-xs">Categories </span>
+                        @*@Html.PropertyFor(x => x.CategoriesContentArea)*@
+                    <ul>
+                        @foreach (var category in Model.CategoryLinks)
+                        {
+                            <li>
+                                <a class="menu" href="@Url.ContentUrl(category.Href)" target="@category.Target">@category.Text</a>
+                                <hr class="hrName">
+                            </li>
+                           
+                        }
+                    </ul>
+                    </div>
+                </div>
+
+                <span class="visible-xs ColumnName col-lg-4 col-md-4 col-sm-4 col-xs-12" data-toggle="collapse" data-target="#InformationCollapse">
+                    Information
+                </span>
+                <div class="hidden-xs col-lg-4 col-md-4 col-sm-4 visible-sm visible-md visible-lg InformationCollapse" id="InformationCollapse">
+                    <div class="InformationBlock ">
+                        <span class="ColumnName hidden-xs">Information </span>
+                        @Html.PropertyFor(x => x.InformationContentArea)
+                    </div>
+                </div>
+
+
+                <span class="visible-xs ColumnName col-lg-4 col-md-4 col-sm-4 col-xs-12" data-toggle="collapse" data-target="#SubscribeCollapse">
+                    Subscribe
+                </span>
+                <div class="hidden-xs col-lg-4 col-md-4 col-sm-4 visible-sm visible-md visible-lg SubscribeCollapse" id="SubscribeCollapse">
+                    <span class="ColumnName hidden-xs">Subscribe </span>
+                    <div class="SubscriptionBlock ">
+                        <vuefooter></vuefooter>
+                        <div>
+                            @foreach (var icon in Model.SocialMediaIcons)
+                            {
+                                <a href="@icon.ReferenceUrl"><img class="footerimg" src="@Url.ContentUrl(icon.Image) " style="height:25px; width: auto; padding-right:5px; padding-bottom:5px;" /></a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <center>
+                <h5  id="footer">@Html.PropertyFor(m => Model.CopyrightText)</h5>
+            </center>
+       
+    </div>
+</body>
+</html>
+

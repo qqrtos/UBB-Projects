@@ -1,0 +1,13 @@
+﻿#minicart .quick-checkout-btn {
+    border-radius: 20px;
+    outline: none;
+    background-color: #c9bb7a;
+    color: black;
+    border: 0;
+    padding: 5px 10px 5px 10px;
+    font-weight: lighter;
+}
+
+#minicart .minicart-group {
+    padding-top: 10px;
+}

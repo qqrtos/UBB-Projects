@@ -1,0 +1,76 @@
+﻿@using System.Web.Optimization
+@using CmsTraining.Services
+
+@model CmsTraining.Features.Catalog.Category.Presentation.ViewModels.CategoryPageViewModel
+
+<script>
+        var products = @JavaScriptConverter.SerializeObject(Model.Products)
+</script>
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+</head>
+<body id="category-page">
+    @Html.Partial("~/Features/Shared/Views/_Breadcrumb.cshtml", Model.Breadcrumb)
+    <ul>
+
+        @if (Model.Categories != null)
+        {
+            foreach (var subcategory in Model.Categories)
+            {
+                <li>
+
+                    <div class="col-xs-12 col-sm-4 col-md-3">
+                        <a href="@subcategory.Link"><img src="@subcategory.Image" style="height:150px; width:150px"></a>
+                        <br>
+                        <a href="@subcategory.Link">
+                            @subcategory.DisplayName
+                        </a>
+                    </div>
+                </li>
+            }
+        }
+        else if (Model.Products != null)
+        {
+            @*foreach (var product in Model.Products)
+                {
+                    if (product.MaxPrice != 0 || product.MinPrice != 0)
+                    {
+                        <li>
+                            <div class="col-xs-12 col-md-3">
+                                <a href="@product.Link"><img src="@product.Image" style="height:150px; width:150px"></a>
+                                <br>
+                                <a href="@product.Link">
+                                    @product.DisplayName
+                                </a>
+                                <br />
+                                @{
+                                    if (product.MaxPrice == product.MinPrice)
+                                    {
+                                        <p>@product.MinPriceFormatted</p>
+
+                                    }
+                                    else
+                                    {
+                                        <p>@product.MinPriceFormatted - @product.MaxPriceFormatted</p>
+                                    }
+
+                                }
+
+                            </div>
+                        </li>
+                    }
+                }*@
+
+            <product-list-component></product-list-component>
+
+        }
+    </ul>
+
+</body>
+</html>
+
+@Styles.Render("~/bundles/css-category")

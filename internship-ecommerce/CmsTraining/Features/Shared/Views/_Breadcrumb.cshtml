@@ -1,0 +1,18 @@
+﻿
+@model CmsTraining.Features.Catalog.Category.Presentation.ViewModels.BreadCrumbViewModel
+
+<div id="breadcrumb" style="padding-bottom: 2rem;">
+    <a href="@Model.HomepageUrl"><i class="fa fa-home" aria-hidden="true"> / </i></a>
+    @foreach (var item in Model.Models)
+     {
+        if (Model.Models.Last().Equals(item))
+        {
+            <p> @item.DisplayName </p>
+        }
+        else
+        {
+            <a href="@item.Url"> @item.DisplayName /</a>
+        }
+     }
+</div>
+

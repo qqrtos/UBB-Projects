@@ -1,0 +1,109 @@
+﻿.slider-prev {
+    cursor: pointer;
+}
+
+.slider-next {
+    cursor: pointer;
+}
+
+a {
+    text-decoration: none !important;
+}
+
+a:focus {
+    outline: none;
+}
+
+.slick-next:before {
+    display: none;
+}
+
+.slick-controls .next {
+    margin-bottom: 20px;
+}
+
+.slick-controls .next:hover {
+    color: #c9bb7a;
+}
+
+.slick-prev:before {
+    display: none;
+}
+
+.slick-controls .prev {
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
+
+.slick-controls .prev:hover {
+    color: #c9bb7a;
+}
+
+.slick-controls {
+    text-align: center;
+    font-size: 30px;
+    color: #c5c5c5;
+}
+
+.slick-slide {
+    margin: 0 10px;
+}
+
+.slick-top-line {
+    color: #ebebeb;
+    height: 1px;
+}
+
+.slick-bottom-line {
+    color: #ebebeb;
+}
+
+.slick-wrapper {
+    outline: none;
+}
+
+.card-img-top {
+    width: 100%;
+    height: 290px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.card-category {
+    font-family: MontserratRegular;
+    color: #c9bb7a;
+    font-size: 12px;
+    letter-spacing: 0.02rem;
+    margin-bottom: 15px;
+    outline: none;
+}
+
+.card-title{
+    color: #505050;
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.card-text {
+    font-family: OpenSansRegular;
+    color: #505050;
+    font-size: 14px;
+    line-height: 24px;
+    text-align: left;
+}
+
+@font-face {
+    font-family: MontserratLight;
+    src: url(/fonts/Montserrat-Light.ttf);
+}
+
+@font-face {
+    font-family: MontserratRegular;
+    src: url(/fonts/Montserrat-Regular.ttf);
+}
+
+@font-face {
+    font-family: OpenSansRegular;
+    src: url(/fonts/OpenSans-Regular.ttf);
+}

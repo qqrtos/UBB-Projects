@@ -1,0 +1,10 @@
+﻿@model CmsTraining.Models.Blocks.HeroBlock
+
+<div class="hero-container">
+    <a class="hero-category" href="@Url.ContentUrl(Model.LinkUrl)">@Html.PropertyFor(model => model.Category)</a>
+    <div class="hero-title">@Html.DisplayFor(model => model.Title)</div>
+    <div class="hero-image">@Html.PropertyFor(model => model.Image)</div>
+    <p class="hero-text">@Html.DisplayFor(model => model.Description)</p>
+    <div class="hero-read-more"><a href="@Model.LinkUrl">READ MORE</a></div>
+</div>
+

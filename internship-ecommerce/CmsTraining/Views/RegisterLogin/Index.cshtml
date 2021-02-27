@@ -1,0 +1,33 @@
+﻿@using EPiServer.Web.Mvc.Html
+@using System.Web.Optimization
+
+@model CmsTraining.Models.Pages.RegisterLoginPage
+
+@Styles.Render("~/bundles/css")
+
+<div class="container registerlogin">
+    @if (HttpContext.Current.User.Identity.IsAuthenticated)
+    {
+        var redirectUrl = "/en/" + Url.Action("Index", "Home");
+        Response.Redirect(redirectUrl);
+        //Response.Redirect();
+    }
+    else
+    {
+        <div class="row vertical-align">
+            <div class="register-title col-xs-10">
+                @Html.PropertyFor(m => m.Title)
+            </div>
+            <div class="col-xs-2" style="text-align:right;">
+                <i class="far fa-user"></i>
+            </div>
+        </div>
+        <hr />
+        <div class="main-body-paragraph">
+            @Html.PropertyFor(m => m.MainBody)
+        </div>
+        <div>
+            @Html.PropertyFor(m => m.MainContentArea)
+        </div>
+    }
+</div>

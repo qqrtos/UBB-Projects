@@ -1,0 +1,14 @@
+﻿@using System.Web.Optimization
+@model CmsTraining.Models.Pages.BlogPostPage
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<div class="container" >
+    <h2>@Html.PropertyFor(m => m.Title)</h2>
+    <div >
+        @Html.PropertyFor(m => m.MainContentArea)
+    </div>
+</div>
+

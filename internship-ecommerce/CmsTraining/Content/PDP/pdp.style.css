@@ -1,0 +1,87 @@
+﻿.pdp-sizes {
+    display: flex;
+}
+
+.pdp-colors {
+    display: flex;
+}
+
+.pdp-inputs {
+    margin-left: 3vw;
+}
+
+#pdp .selection-wrapper {
+    padding: 20px 20px 5px 20px;
+    width: 100%;
+}
+
+#pdp .checkout-variant {
+    margin-bottom: 105px;
+}
+
+#pdp h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    color: #505050;
+    padding-bottom: 20px;
+}
+
+#pdp h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: bold;
+    font-size: 25px;
+    color: #505050;
+    padding-top: 0.4rem;
+    margin-block-start: 0;
+}
+
+#pdp p {
+    font-family: 'Montserrat', sans-serif;
+    color: black;
+}
+
+#pdp .description {
+    padding-bottom: 20px;
+}
+
+#pdp .btn-primary {
+    border-radius: 50px;
+    background: #c9bb7a;
+    border: none;
+    padding: 10px 15px;
+    width: 100%;
+    min-width: 153px;
+    max-width: 180px;
+}
+
+#pdp .btn-primary:focus {
+    outline:none;
+}
+
+#pdp .fa-shopping-cart {
+    padding-right: 10px;
+}
+
+#pdp .pdp-chose {
+    font-size: 21px;
+}
+
+#pdp .pdp-chose-text {
+    font-weight: bolder;
+}
+
+@media only screen and (min-width: 990px) {
+    .pdp-inputs {
+        margin-left: 0.85vw;
+    }
+}
+
+@media only screen and (max-width: 320px) {
+    #pdp .pdp-chose {
+        font-size: 12px;
+    }
+    
+    #pdp .pdp-chose-text {
+        font-size: 11px;
+    }
+}

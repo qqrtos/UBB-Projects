@@ -1,0 +1,17 @@
+﻿@using CmsTraining.Services
+
+@model CmsTraining.Models.Blocks.LoginBlock
+
+<script type="text/javascript">
+    var serverSideViewModel_Login = @JavaScriptConverter.SerializeObject(new {
+            heading = Model.Heading,
+            emailLabel = Model.EmailLabel,
+            passwordLabel = Model.PasswordLabel,
+            submitButtonText = Model.SubmitButtonText,
+            emailPlaceholder = Model.EmailPlaceholder
+        })
+</script>
+
+<div class="col-xs-12 col-md-4">
+    <loginform></loginform>
+</div>

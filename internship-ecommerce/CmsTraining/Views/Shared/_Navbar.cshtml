@@ -1,0 +1,59 @@
+﻿@using EPiServer.Web.Mvc.Html
+@using System.Web.Optimization
+@model CmsTraining.Models.ViewModels.NavbarViewModel
+
+<head>
+    @Scripts.Render("~/bundles/js")
+    @Styles.Render("~/bundles/minicart-css")
+</head>
+
+<div class="navbar navbar-default">
+    <div class="container" id="navbar">
+        <div class="navbar-header" >
+            <a href="@Model.Link"><img src="@Model.Image"/></a>
+            <button type="button" class="navbar-toggle collapsed navbar-button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-expanded="false">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="fa fa-times"></span>
+            </button>
+        </div>
+
+        <div class="collapse navbar-collapse navbar-div" id="navbarSupportedContent">
+            <ul class="nav navbar-nav ml-auto">
+                @if (HttpContext.Current.User.Identity.IsAuthenticated)
+                {
+                    <li>
+                        <a onclick="handleLogout()">LOG OUT</a>
+                    </li>
+                }
+                else
+                {
+                    <li>@Html.ContentLink(Model.RegisterPage.MenuName, Model.RegisterPage.ContentLink)</li>
+                }
+
+                @foreach (var page in Model.Children)
+                 {
+
+                    if (page.Equals(Model.CurrentPage))
+                    {
+                    <li class="active-item">@Html.ContentLink(page.MenuName.ToString().ToUpper(), page.ContentLink)</li>
+                    }
+                    else
+                    {
+                    <li>@Html.ContentLink(page.MenuName.ToString().ToUpper(), page.ContentLink)</li>
+                    }
+                 }
+                <li>
+                    <div class="mini-cart">
+                        <minicart></minicart>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+@Styles.Render("~/bundles/css")
+

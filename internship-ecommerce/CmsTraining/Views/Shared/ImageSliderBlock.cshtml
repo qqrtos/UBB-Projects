@@ -1,0 +1,62 @@
+﻿@using CmsTraining.Models.Blocks
+@using EPiServer.ServiceLocation
+@using EPiServer
+
+@model CmsTraining.Models.Blocks.ImageSliderBlock
+
+@{
+    var isCarouselNotEmpty = Model.Items != null && Model.Items.FilteredItems.Any();
+    var contentContainer = ServiceLocator.Current.GetInstance<IContentRepository>();
+}
+
+<hr class="slick-top-line" />
+
+<div class="slider" @Html.EditAttributes(m => m.Items)>
+    @if (isCarouselNotEmpty)
+    {
+        foreach (var sliderItem in Model.Items.FilteredItems)
+        {
+            var block = contentContainer.Get<ImageSliderBlockItem>(sliderItem.ContentLink);
+
+            <div class="slick-wrapper">
+                <a href="@block.Link">
+                    @Html.DisplayFor(m => block)
+                </a>
+            </div>
+        }
+    }
+</div>
+
+<hr class="slick-bottom-line" />
+
+<div class="slick-controls">
+    <i class="slider-prev prev fa fa-angle-left"></i>
+    <i class="slider-next next fa fa-angle-right"></i>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.slider').slick({
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            autoplay: true,
+            prevArrow: $('.prev'),
+            nextArrow: $('.next'),
+            mobileFirst: true,
+            responsive: [
+                {
+                    breakpoint: 460,
+                    settings: {
+                        slidesToShow: 2,
+                    }
+                },
+                {
+                    breakpoint: 1024,
+                    settings: {
+                        slidesToShow: 3,
+                    }
+                }
+            ]
+        });
+    });
+</script>

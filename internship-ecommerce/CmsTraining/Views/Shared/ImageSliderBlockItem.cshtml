@@ -1,0 +1,15 @@
+﻿@using EPiServer.Core
+@using EPiServer.Web.Mvc.Html
+
+@model CmsTraining.Models.Blocks.ImageSliderBlockItem
+
+@if (!ContentReference.IsNullOrEmpty(Model.ImageData))
+{
+    <div class="card-body">
+        <img class="card-img-top" src="@Url.ContentUrl(Model.ImageData)" />
+        <a href="#@Model.Category"><p class="card-category">@Model.Category</p></a>
+        <h4 class="card-title">@Html.PropertyFor(m => m.TitleField)</h4>
+        <p class="card-text">@Model.Description</p>
+    </div>
+}
+

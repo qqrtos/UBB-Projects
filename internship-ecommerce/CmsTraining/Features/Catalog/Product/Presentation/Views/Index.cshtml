@@ -1,0 +1,16 @@
+﻿@using CmsTraining.Features.Catalog.Product.Presentation.ViewModels
+@using CmsTraining.Services
+@using System.Web.Optimization
+
+@model ProductPageViewModel
+
+<script>
+    var variantsPDP = @JavaScriptConverter.SerializeObject(Model.Variants)
+    var productPDP  = @JavaScriptConverter.SerializeObject(Model.Product)
+</script>
+@Html.Partial("~/Features/Shared/Views/_Breadcrumb.cshtml", Model.Breadcrumb)
+
+<productdetail></productdetail>
+
+
+@Styles.Render("~/bundles/css-category")

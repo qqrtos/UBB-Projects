@@ -1,0 +1,23 @@
+﻿@using CmsTraining.Services
+
+@model CmsTraining.Models.Blocks.RegisterBlock
+
+<script type="text/javascript">
+var serverSideViewModel_Register = @JavaScriptConverter.SerializeObject(new {
+        heading = Model.Heading,
+        firstNameLabel = Model.FirstNameLabel,
+        lastNameLabel = Model.LastNameLabel,
+        phoneNumberLabel = Model.PhoneNumberLabel,
+        emailLabel = Model.EmailLabel,
+        genderLabel = Model.GenderLabel,
+        statesLabel = Model.StatesLabel,
+        statesList = Model.StatesList,
+        passwordabel = Model.PasswordLabel,
+        confirmPasswordLabel = Model.ConfirmPasswordLabel,
+        submitButtonText = Model.SubmitButtonText
+    })
+</script>
+
+<div class="col-xs-12 col-md-8">
+    <registerform></registerform>
+</div>

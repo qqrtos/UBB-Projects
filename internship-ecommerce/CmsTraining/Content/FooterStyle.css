@@ -1,0 +1,173 @@
+﻿body {
+    padding: 0px !important;
+    font-family: 'Montserrat';
+}
+
+
+#footerrow.wrap {
+ /*   position: absolute;
+    bottom: 0;
+    width: 100%;*/
+    background-color: #f8f8f8;
+}
+
+#footerrow ul{
+    padding-left: 0px;
+}
+
+
+.hrName {
+    margin-bottom: 0px
+}
+
+.footerimg {
+    max-width:50px;
+    width:100%
+}
+
+#footer {
+    padding-top: 1%;
+    padding-bottom: 1%;
+    background-color: black;
+    color: gray;
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+
+.ColumnName {
+    z-index: 5 !important;
+    padding-top: 5%;
+    padding-bottom: 5%;
+    font-weight: bold;
+    font-size: 20px;
+    display: inline-block;
+}
+
+#CategoriesCollapse.in,
+#CategoriesCollapse.collapsing {
+    display: block !important;
+}
+
+#InformationCollapse.in,
+#InformationCollapse.collapsing {
+    display: block !important;
+}
+
+#SubscribeCollapse.in,
+#SubscribeCollapse.collapsing {
+    display: block !important;
+}
+
+.together {
+    border-radius: 30px;
+    border-top-right-radius: 30px !important;
+    border-bottom-right-radius: 30px !important;
+}
+
+.btn-footer {
+    background-color: #c9bb7a !important;
+    flex-grow: 2;
+    /* And hide the input's outline, so the form looks like the outline */
+    border: none;
+    border-radius: 30px;
+    border-top-right-radius: 30px !important;
+    border-bottom-right-radius: 30px !important;
+    color:black !important;
+
+    position: absolute;
+    transform: translate(-77%, 12%);
+}
+
+.btn-footer:focus {
+    outline: none !important;
+}
+
+.btn-footer:hover {
+    background-color: #ebdfa9 !important;
+}
+
+.submit-btn-text {
+    margin: 10px 7px 10px 7px;
+}
+
+
+#footerrow.input-style {
+    border-radius: 30px;
+    border-top-right-radius: 30px !important;
+    border-bottom-right-radius: 30px !important;
+    flex-grow: 2;
+    border: none;
+    background-color: transparent;
+}
+
+#footerrow.input:focus, textarea:focus, select:focus {
+    outline: none !important;
+}
+
+.together {
+    display: flex;
+    flex-direction: row;
+    /* This bit draws the box around it */
+    /* I've used padding so you can see the edges of the elements. */
+    padding: 2px !important;
+
+    /*New*/
+    /*border: 1px solid lightgray;*/
+    background-color: transparent;
+    outline: none;
+}
+
+#footerrow input {
+    border-radius: 30px;
+    border: 1px solid #ebebeb;
+    padding: 15px;
+    width: 111%;
+    font-size: 14px;
+    color: #aeadad;
+    outline: none;
+    background-color: white;
+    min-width: 220px;
+        
+}
+
+#footerrow input:hover{
+    background-color: white;
+}
+
+.input-group > .input-group-append > .btn {
+    border-top-left-radius: 30px !important;
+    border-bottom-left-radius: 30px !important;
+    border-radius: 30px;
+    color: #ffffff;
+    border-color: #ebebeb;
+    right: 85px;
+    top: 1px;
+    height: 35px;
+}
+#footerrow a {
+    color: inherit;
+    font-weight: lighter;
+}
+
+a:hover {
+    color: #c9bb7a;
+    text-decoration: none;
+}
+
+#footerrow li{
+    text-align: left;
+    
+}
+
+.is-invalid{
+    color: red;
+    font-style: italic;
+    font-size: 12px;
+    padding-left: 1rem;
+}
+
+@media only screen and (max-width: 320px) {
+    .product_details{
+        font-size:15px;
+    }
+}

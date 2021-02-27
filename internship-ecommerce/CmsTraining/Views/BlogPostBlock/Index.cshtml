@@ -1,0 +1,25 @@
+﻿@using System.Web.Optimization
+@using EPiServer.Web.Mvc.Html
+
+@model CmsTraining.Models.Blocks.BlogPostBlock
+@{ ViewBag.Title = "BlogPostBlock"; }
+
+
+<body>
+    <div class="row blog-row  blogpost-block" id="blogpost">
+        <div class="col-xs-12 col-md-2">
+            @Html.PropertyFor(m => m.PageImage)
+        </div>
+        <div class="col-xs-12 col-md-10">
+            <h6>@Html.PropertyFor(m => m.Category)</h6>
+            <h3>@Html.PropertyFor(m => m.Title)</h3>
+            @Html.PropertyFor(m => m.Description)
+            <div class="col-xs-12 col-md-12 blog-col">
+                @Html.ContentLink("READ MORE", @Model.Link)
+            </div>
+        </div>
+
+
+    </div>
+</body>
+@Styles.Render("~/bundles/css-blogpost")

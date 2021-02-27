@@ -1,0 +1,68 @@
+﻿#category-page a {
+    font-weight: bold;
+    color: inherit;
+    font-family: 'Montserrat';
+}
+
+#category-page li {
+  text-align: center;
+}
+
+#category-page input {
+    background-color: #505050;
+    color: white;
+    width: 100%;
+    border-radius: 0px;
+    padding: 5px;
+    border: none;
+
+}
+
+#category-page input:hover{
+    background-color: grey;
+ 
+}
+#category-page input:focus{
+    outline: none;
+}
+
+#category-page ul{
+    padding-left: 0px; 
+}
+
+
+#breadcrumb a:hover{
+    color: dimgray !important;
+    background-color: transparent !important;
+    text-decoration: none;
+}
+#breadcrumb .fa-home {
+   color: #C9BC78;
+}
+
+#breadcrumb a:active {
+    color: #C9BC78;
+    background-color: transparent;
+    text-decoration: none;
+}
+
+#breadcrumb a {
+    font-weight: bold;
+    color: #C9BC78;
+    font-family: 'Montserrat';
+}
+
+#breadcrumb p {
+    display: inline-block;
+   
+}
+
+@media only screen and (max-width: 767px) {
+
+    #breadcrumb p{
+        display:inline-block;
+        font-size: 18px;
+        
+    }
+}
+

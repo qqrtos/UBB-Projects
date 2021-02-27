@@ -1,0 +1,78 @@
+﻿.hero-container {
+    text-align: center;
+}
+
+.hero-category {
+    color: #c9bb7a !important;
+    letter-spacing: 0.02rem;
+    font-family: MontserratRegular;
+}
+
+.hero-category:visited{
+    color: #c9bb7a !important;
+}
+
+.hero-category:hover {
+    color: #c9bb7a;
+}
+
+.hero-title {
+    font-family: MonsterratThin;
+    color: #505050;
+    font-size: 60px;
+    line-height: 60px;
+}
+
+.hero-image img{
+    width: 1120px;
+/*    height: 480px;*/
+    border-radius: 5px;
+    padding-top: 20px;
+    max-width: 100%;
+}
+
+.hero-text {
+    font-family: OpenSansRegular;
+    color: #505050;
+    font-size: 16px;
+    line-height: 24px;
+    width: 66.6666%;
+    margin: auto;
+    padding-top: 20px;
+}
+
+.hero-read-more {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    font-family: MontserratBold;
+    color: #505050;
+    font-size: 12px;
+}
+
+.hero-read-more :any-link:hover {
+    color: #505050;
+}
+
+.hero-read-more :any-link {
+    color: #505050;
+}
+
+@font-face {
+    font-family: MonsterratThin;
+    src: url(/fonts/Montserrat-Thin.ttf);
+}
+
+@font-face {
+    font-family: MontserratRegular;
+    src: url(/fonts/Montserrat-Regular.ttf);
+}
+
+@font-face {
+    font-family: MontserratBold;
+    src: url(/fonts/Montserrat-Bold.ttf);
+}
+
+@font-face {
+    font-family: OpenSansRegular;
+    src: url(/fonts/OpenSans-Regular.ttf);
+}
