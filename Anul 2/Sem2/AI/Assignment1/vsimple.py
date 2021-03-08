@@ -170,6 +170,7 @@ class Drone:
         self.x = x
         self.y = y
         self.stack = []
+        self.visited = {}
 
     def move(self, detectedMap):
         pressed_keys = pygame.key.get_pressed()
@@ -187,32 +188,33 @@ class Drone:
             if pressed_keys[K_RIGHT] and detectedMap.surface[self.x][self.y + 1] == 0:
                 self.y = self.y + 1
 
-    def moveDSF(self, detectedMap, delayInSeconds=0.03):
+    def moveDSF(self, detectedMap, delayInSeconds=0.1):
         time.sleep(delayInSeconds)
-        self.stack.append((self.x, self.y))
 
-        if self.x > 0:
-            if detectedMap.surface[self.x - 1][self.y] == 0:
-                self.x = self.x - 1
-                return
-        if self.x < 19:
-            if detectedMap.surface[self.x + 1][self.y] == 0:
-                self.x = self.x + 1
-                return
+        self.visited[(self.x, self.y)] = 1
 
-        if self.y > 0:
-            if detectedMap.surface[self.x][self.y - 1] == 0:
-                self.y = self.y - 1
-                return
-        if self.y < 19:
-            if detectedMap.surface[self.x][self.y + 1] == 0:
-                self.y = self.y + 1
-                return
-
-        # self.stack.pop()
-        if len(self.stack) > 0:
-            self.x, self.y = self.stack[-1]
-            self.stack.pop()
+        if self.x > 0 and detectedMap.surface[self.x - 1][self.y] == 0 and self.visited.get(
+                (self.x - 1, self.y)) is None:
+            self.stack.append((self.x, self.y))
+            self.visited[(self.x - 1, self.y)] = 1
+            self.x = self.x - 1
+        elif self.x < 19 and detectedMap.surface[self.x + 1][self.y] == 0 and self.visited.get(
+                (self.x + 1, self.y)) is None:
+            self.stack.append((self.x, self.y))
+            self.visited[(self.x + 1, self.y)] = 1
+            self.x = self.x + 1
+        elif self.y > 0 and detectedMap.surface[self.x][self.y - 1] == 0 and self.visited.get(
+                (self.x, self.y - 1)) is None:
+            self.stack.append((self.x, self.y))
+            self.visited[(self.x, self.y - 1)] = 1
+            self.y = self.y - 1
+        elif self.y < 19 and detectedMap.surface[self.x][self.y + 1] == 0 and self.visited.get(
+                (self.x, self.y + 1)) is None:
+            self.stack.append((self.x, self.y))
+            self.visited[(self.x, self.y + 1)] = 1
+            self.y = self.y + 1
+        elif len(self.stack) > 0:
+            self.x, self.y = self.stack.pop()
         else:
             self.x = None
             self.y = None
@@ -257,12 +259,21 @@ def main():
             # only do something if the event is of type QUIT
             if event.type == pygame.QUIT:
                 # change the value to False, to exit the main loop
-                running = False 
-            # if event.type == KEYDOWN:
+                running = False
+                # if event.type == KEYDOWN:
             # use this function instead of move
             # d.move(m)
-            d.moveDSF(m)
         m.markDetectedWalls(e, d.x, d.y)
+
+        d.moveDSF(m, 1 / 13)
+
+        if d.x is None and d.y is None:
+            running = False
+            while True:
+                pygame.event.wait(1000000)
+                break
+            continue
+
         screen.blit(m.image(d.x, d.y), (400, 0))
         pygame.display.flip()
 
