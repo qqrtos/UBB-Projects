@@ -1,0 +1,28 @@
+html {
+    height:100%;
+    width:100%;
+}
+
+body {
+    height:100%;
+    width:100%;
+}
+
+hr{
+    margin: 2px;
+    border-color: black;
+}
+
+.gradient {
+    height: 49%;
+}
+
+.red_gradient {
+    background-color: red;
+    background-image: radial-gradient(circle, white, transparent 100%);
+}
+
+.blue_gradient{
+    background-color: blue;
+    background-image: radial-gradient(circle, white, transparent 100%);
+}
