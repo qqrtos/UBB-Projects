@@ -8,16 +8,16 @@ div {
     transition: all 0.5s;
   }
 
-div:hover {
-    background-color: red;
-    top: 100%;
-    left: 100%;
-    transform: translate(-100%, -100%);
-}
-
-/* html:hover div {
+/* div:hover {
     background-color: red;
     top: 100%;
     left: 100%;
     transform: translate(-100%, -100%);
 } */
+
+html:hover div {
+    background-color: red;
+    top: 100%;
+    left: 100%;
+    transform: translate(-100%, -100%);
+}

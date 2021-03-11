@@ -6,15 +6,16 @@ html {
 body {
     height:100%;
     width:100%;
+    margin:0;
 }
 
 hr{
     margin: 2px;
-    border-color: black;
+    border-color: black 1px;
 }
 
-.gradient {
-    height: 49%;
+.half {
+    height: calc(50% - 3px);
 }
 
 .red_gradient {
