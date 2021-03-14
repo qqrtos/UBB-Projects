@@ -1,0 +1,6 @@
+2) Online shopping: Provide top level use cases for a web customer making purchases on-line. 
+Web customer actor uses some web site to make purchases online. Top level use cases are View Items,
+Make Purchase and Client Register.
+
+
+TODO: use case diagram and UML Class diagram.
