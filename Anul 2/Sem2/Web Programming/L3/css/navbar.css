@@ -1,0 +1,39 @@
+#navbar {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    margin: 0;
+    background-color: #0C7FD7;
+}
+
+#navbar .container {
+    width: 100%;
+    display: flex;
+    margin-bottom: 0px;
+    justify-content: space-between;
+
+}
+
+#navbar i {
+    padding: 10px 8px 0 0;
+    color: white;
+}
+
+#navbar ul.social-media-icons {
+    list-style-type: none;
+}
+
+#navbar ul {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: flex;
+}
+
+#navbar .title {
+    font-family: 'Pacifico', cursive;
+    font-size: 1.75em;
+    color: white;
+}

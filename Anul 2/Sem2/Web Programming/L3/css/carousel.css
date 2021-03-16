@@ -1,0 +1,46 @@
+.carousel {
+    display: flex;
+    justify-content: space-between;
+}
+
+.carousel .card {
+    position: relative;
+    margin: 10px;
+}
+
+.carousel .text {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    color: white;
+    bottom: 1.2%;
+}
+
+
+.carousel .text h3 {
+    width: 35%;
+    margin: auto;
+}
+
+.carousel .text p {
+    padding-top: 5px;
+    margin: 0;
+}
+
+.carousel .card img {
+    max-width: 100%;
+    height: auto;
+}
+
+.carousel .card.crafty .text :is(h3, p) {
+    background-color: pink;
+}
+
+.carousel .card.vibez .text :is(h3, p) {
+    background-color: #f9f02c;
+}
+
+
+.carousel .card.facts .text :is(h3, p) {
+    background-color: #f9412c;
+}

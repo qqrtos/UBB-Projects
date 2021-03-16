@@ -1,0 +1,16 @@
+#block-main {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+#block-main img {
+    width: 100%;
+}
+
+#block-main .article {
+    color: white;
+    position: absolute;
+    bottom: 15%;
+    left: 15%;
+    width: 40%;
+}
