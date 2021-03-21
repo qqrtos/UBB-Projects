@@ -9,8 +9,8 @@ class UserInterface:
         self.m = Map()
         self.m.loadMap("Assets/test1.map")
 
-        self.startX = randint(0, 19)
-        self.startY = randint(0, 19)
+        self.startX = 2#randint(0, 19)
+        self.startY = 1#randint(0, 19)
         self.d = Drone(self.startX, self.startY)
 
     def displayWithPath(self, image, path):
@@ -34,9 +34,14 @@ class UserInterface:
         # we position the drone somewhere in the area
 
 
-        # we position the drone somewhere in the area
-        fx = randint(0, 19)
-        fy = randint(0, 19)
+        while True:
+            fx = randint(0, 19)
+            fy = randint(0, 19)
+            if self.m.surface[fx][fy] == 0:
+                break
+
+        fx = 15
+        fy = 19
 
         # create a surface on screen that has the size of 400 x 480
         screen = pygame.display.set_mode((400, 400))
@@ -61,7 +66,8 @@ class UserInterface:
             pygame.display.flip()
 
         # greedyStartTime = time.process_time()
-        path = searchGreedy(self.m, self.d, self.startX, self.startY, fx, fy)
+        path = searchGreedy(self.m, self.startX, self.startY, fx, fy)
+        # path = searchAStar(self.m, self.startX, self.startY, fx, fy)
         # greedyEndTime = time.process_time()
         # r = greedyEndTime - greedyStartTime
         #
