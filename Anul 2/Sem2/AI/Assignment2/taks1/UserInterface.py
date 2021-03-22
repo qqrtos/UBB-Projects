@@ -1,6 +1,6 @@
 from taks1.Models.Map import *
 from taks1.Models.Drone import *
-from random import random, randint
+from random import randint
 from taks1.Service import *
 import time
 
@@ -9,8 +9,8 @@ class UserInterface:
         self.m = Map()
         self.m.loadMap("Assets/test1.map")
 
-        self.startX = 2#randint(0, 19)
-        self.startY = 1#randint(0, 19)
+        self.startX = randint(0, 19)
+        self.startY = randint(0, 19)
         self.d = Drone(self.startX, self.startY)
 
     def displayWithPath(self, image, path):
@@ -21,7 +21,16 @@ class UserInterface:
 
         return image
 
-    def main(self):
+    def showMenu(self):
+        print("a. Greedy")
+        print("b. A*")
+        opt = input("> ")
+        if opt == "a":
+            self.main(searchAStar)
+        else:
+            self.main(searchGreedy)
+
+    def main(self, pathFunc):
         # initialize the pygame module
         pygame.init()
         pygame.font.init()
@@ -39,9 +48,6 @@ class UserInterface:
             fy = randint(0, 19)
             if self.m.surface[fx][fy] == 0:
                 break
-
-        fx = 15
-        fy = 19
 
         # create a surface on screen that has the size of 400 x 480
         screen = pygame.display.set_mode((400, 400))
@@ -65,15 +71,9 @@ class UserInterface:
             screen.blit(self.d.mapWithDrone(self.m.image()), (0, 0))
             pygame.display.flip()
 
-        # greedyStartTime = time.process_time()
-        path = searchGreedy(self.m, self.startX, self.startY, fx, fy)
-        # path = searchAStar(self.m, self.startX, self.startY, fx, fy)
-        # greedyEndTime = time.process_time()
-        # r = greedyEndTime - greedyStartTime
-        #
+        path = pathFunc(self.m, self.startX, self.startY, fx, fy)
+
         screen.blit(self.displayWithPath(self.m.image(), path), (0, 0))
-        # greedyRunningTimeLabel = font.render(str(r) + "ms", False, (0, 0, 0))
-        # screen.blit(greedyRunningTimeLabel, (0, 0))
 
         pygame.display.flip()
         time.sleep(5)
