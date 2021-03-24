@@ -1,0 +1,25 @@
+#container {
+	margin: 75px 20% 0 20%;
+}
+
+ul {
+	display: flex;
+	flex-wrap: wrap;
+	list-style-type: none;
+	justify-content: space-evenly;
+	color: white;
+}
+
+ul li {
+	background: lightcoral;
+	width: 30%;
+	height: 120px;
+	margin-top: 15px;
+	text-align: center;
+	font-size: 1.5em;
+	padding-top: 3em;
+}
+
+ul li.empty {
+	background: white;
+}
