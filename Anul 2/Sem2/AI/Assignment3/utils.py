@@ -15,7 +15,13 @@ LEFT = 1
 RIGHT = 3
 
 # define indexes variations
-v = [[-1, 0], [1, 0], [0, 1], [0, -1]]
+DIRECTIONS = [[-1, 0], [1, 0], [0, 1], [0, -1]]
+DIRECTIONS_DICT = {
+    UP: DIRECTIONS[0],
+    DOWN: DIRECTIONS[1],
+    RIGHT: DIRECTIONS[2],
+    LEFT: DIRECTIONS[3]
+}
 
 # define mapsize
 mapLengh = 20
