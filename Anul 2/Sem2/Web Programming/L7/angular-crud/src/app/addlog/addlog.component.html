@@ -1,0 +1,22 @@
+<label for="_type">Type</label> <input [(ngModel)]="logType" id="_type" type="text" name="type">
+<br />
+
+<label for="_serverity">Severity</label> <input id="_severity" type="text" name="severity">
+<br />
+
+<label for="_date">Date</label> <input id="_date" type="date" name="date">
+<br />
+
+<label for="_userid">User ID</label> <input id="_userid" type="integer" name="userid">
+<br />
+
+<label for="_text">Text</label> <input id="_text" type="text" name="text">
+<br />
+
+<div>
+    <button id="submitNewLogButton" type="button" (click)="addLog()">Submit</button>
+</div>
+
+<div id="status">
+
+</div>
