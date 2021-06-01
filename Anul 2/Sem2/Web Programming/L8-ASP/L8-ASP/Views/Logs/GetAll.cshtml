@@ -1,0 +1,27 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model LogArrayViewModel
+
+<div>
+    @foreach (var log in Model.Logs) {
+        <div>
+            <div>
+                Type: @log.Type
+            </div>
+            <div>
+                Severity: @log.Severity
+            </div>
+            <div>
+                Date: @log.Date
+            </div>
+            <div>
+                User ID: @log.UserId
+            </div>
+            <div>
+                Description: @log.Description
+            </div>
+        </div>
+        <br />
+    }
+</div>

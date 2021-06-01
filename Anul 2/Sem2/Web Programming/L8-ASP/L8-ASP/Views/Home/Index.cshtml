@@ -1,0 +1,20 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+
+    <div>
+        <a asp-controller="Logs" asp-action="GetAll">Get All</a>
+    </div>
+    <div>
+        <a asp-controller="Logs" asp-action="GetAllForUser">Get All for User</a>
+    </div>
+    <div>
+        <a asp-controller="Logs" asp-action="AddLog">Add Log</a>
+    </div>
+    <div>
+        <a asp-controller="Logs" asp-action="DeleteLog">Delete Log</a>
+    </div>
+</div>

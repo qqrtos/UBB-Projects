@@ -1,0 +1,8 @@
+{
+  "datasets": [
+    ["../Dataset/Female", 1],
+    ["../Dataset/Male", 1],
+    ["../Dataset/Things", 0]
+  ],
+  "split_ratio": 0.8
+}

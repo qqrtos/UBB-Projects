@@ -1,0 +1,19 @@
+<h2> Show all Logs </h2>
+
+<table>
+    <th>ID</th>
+    <th>Type</th>
+    <th>Date</th>
+    <th>Severity</th>
+    <th>User ID</th>
+    <th>Text</th>
+
+    <tr *ngFor="let log of logs">
+        <td>{{log.id}}</td>
+        <td>{{log.type}}</td>
+        <td>{{log.date}}</td>
+        <td>{{log.severity}}</td>
+        <td>{{log.userId}}</td>
+        <td>{{log.text}}</td>
+    </tr>
+</table>

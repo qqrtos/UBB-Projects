@@ -7,12 +7,14 @@ import { AppComponent } from './app.component';
 import { AddlogComponent } from './addlog/addlog.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HomeComponent } from './home/home.component';
+import { ShowalllogsComponent } from './showalllogs/showalllogs.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AddlogComponent,
-    HomeComponent
+    HomeComponent,
+    ShowalllogsComponent
   ],
   imports: [
     BrowserModule,
